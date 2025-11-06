@@ -6,7 +6,12 @@ import { AppComponent } from './app.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { CsrfInterceptor } from './interceptors/csrf.interceptor';
 import { TmdbInterceptor } from './interceptors/tmdb.interceptor';
-import { MediaCardComponent } from './shared/components/media-card/media-card.component';
+import { registerLocaleData } from '@angular/common';
+
+import { LOCALE_ID } from '@angular/core';
+import localeEs from '@angular/common/locales/es';
+
+registerLocaleData(localeEs, 'es-ES');
 
 @NgModule({
   declarations: [
@@ -27,6 +32,9 @@ import { MediaCardComponent } from './shared/components/media-card/media-card.co
       provide: HTTP_INTERCEPTORS,
       useClass: TmdbInterceptor,
       multi: true,
+    },
+    { 
+      provide: LOCALE_ID, useValue: 'es-ES' 
     },
       
   ],

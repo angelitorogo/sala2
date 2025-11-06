@@ -6,6 +6,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { EnCinesComponent } from './components/en-cines/en-cines.component';
 import { ProximosEstrenosComponent } from './components/proximos-estrenos/proximos-estrenos.component';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -20,7 +21,8 @@ import { ProximosEstrenosComponent } from './components/proximos-estrenos/proxim
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    SharedModule
+    SharedModule,
+    FormsModule
   ]
 })
 export class DashboardModule { }

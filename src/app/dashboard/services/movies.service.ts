@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 const TMDB_BASE = 'https://api.themoviedb.org/3';
 
+
 export interface PaginatedResponse<T> {
   page: number;
   results: T[];
@@ -28,6 +29,8 @@ export interface MovieDetails extends Movie {
   homepage: string | null;
   videos?: { results: Array<{ key: string; site: string; type: string; name: string }> };
 }
+
+export type SortOption = 'popularity.desc' | 'vote_average.desc' | 'release_date.desc';
 
 @Injectable({ providedIn: 'root' })
 export class MoviesService {
@@ -86,5 +89,41 @@ export class MoviesService {
       `${TMDB_BASE}/trending/movie/day`,
       { params: { page } as any }
     );
-}
+  }
+
+  /**
+   * Descubrir películas actualmente en cines (filtros/ordenación).
+   * Usa /discover/movie acotando por ventana de fechas y release_type 2|3 (theatrical).
+   * Respeta el interceptor (api_key, language, region).
+  */
+  discoverNowInCinemas(options: {
+    page?: number;
+    with_genres?: number | null;
+    sort_by?: SortOption; // default: 'popularity.desc'
+  } = {}): Observable<PaginatedResponse<Movie>> {
+    const { page = 1, with_genres = null, sort_by = 'popularity.desc' } = options;
+
+    // Ventana de fechas alrededor de "hoy" para simular cartelera actual
+    const today = new Date();
+    const toISO = (d: Date) => d.toISOString().slice(0, 10);
+    const minusDays = (d: Date, n: number) => new Date(d.getTime() - n * 86400000);
+    const plusDays = (d: Date, n: number) => new Date(d.getTime() + n * 86400000);
+
+    const gte = toISO(minusDays(today, 28)); // últimos 28 días
+    const lte = toISO(plusDays(today, 14));  // próximas 2 semanas
+
+    const params: any = {
+      page,
+      sort_by,
+      'with_release_type': '2|3',      // en cines
+      'release_date.gte': gte,
+      'release_date.lte': lte,
+      'include_adult': false
+    };
+
+    if (with_genres) params['with_genres'] = with_genres;
+
+    return this.http.get<PaginatedResponse<Movie>>(`${TMDB_BASE}/discover/movie`, { params });
+  }
+
 }
