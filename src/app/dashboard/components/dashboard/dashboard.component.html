@@ -1,0 +1,135 @@
+<nav id="navbar" class="navbar" [class.menu-open]="isMenuOpen">
+  <div class="container-nav">
+
+    <button class="toggle-btn" type="button" aria-label="Abrir menú" [attr.aria-expanded]="isMenuOpen"
+      (click)="toggleMenu(); $event.stopPropagation()">
+      ☰
+    </button>
+
+    <ng-container *ngIf="!authService.isLoggedIn(); else loggedBlock">
+      <div class="navbar-buttons navbar-right">
+        <a [routerLink]="['/auth/login']" class="btn btn-login">Iniciar Sesión</a>
+        <a [routerLink]="['/auth/register']" class="btn btn-register">Registrarse</a>
+      </div>
+    </ng-container>
+
+    <ng-template #loggedBlock>
+      <div class="navbar-user navbar-right">
+        <span class="user-name">
+          {{ authService.user?.fullname || authService.user?.name || authService.user?.email }}
+        </span>
+        <button class="btn-logout" (click)="logout()" title="salir">⏻</button>
+      </div>
+    </ng-template>
+
+    <div class="nav-collapse" #navCollapse [class.open]="isMenuOpen" id="nav-collapse" (click)="$event.stopPropagation()">
+
+      <div class="logo-menu">
+
+        <div class="navbar-logo">
+          <img src="assets/icons/favicon.png" alt="logo" class="logo-icon">
+          <span class="site-name">SALA 2</span>
+        </div>
+
+        <ul class="navbar-menu">
+          <li id="hasnt-submenu" routerLink="/dashboard/home">
+            <a class="enlace-menu" (click)="onNavLinkClick()">Inicio</a>
+          </li>
+
+          <li class="has-submenu"
+              #submenuCine
+              [class.submenu-open]="submenus!.cine"
+              (click)="toggleSubmenu('cine', $event)">
+
+            <a href="#cine"
+               class="enlace-menu"
+               aria-haspopup="true"
+               [attr.aria-expanded]="submenus!.cine ? 'true' : 'false'">
+               Cine
+            </a>
+
+            <button class="submenu-toggle"
+                    type="button"
+                    aria-label="Abrir submenu Cine"
+                    >▾</button>
+
+            <ul class="submenu" (click)="$event.stopPropagation()">
+              <li><a routerLink="/dashboard/en-cines" class="enlace-menu" (click)="onNavLinkClick()">Ahora en cines</a></li>
+              <li><a routerLink="/dashboard/proximos-estrenos" class="enlace-menu" (click)="onNavLinkClick()">Próximos estrenos</a></li>
+            </ul>
+          </li>
+
+          <li class="has-submenu"
+              #submenuSeries
+              [class.submenu-open]="submenus!.series"
+              (click)="toggleSubmenu('series', $event)">
+
+            <a href="#series"
+               class="enlace-menu"
+               aria-haspopup="true"
+               [attr.aria-expanded]="submenus!.series ? 'true' : 'false'">
+               Series
+            </a>
+
+            <button class="submenu-toggle"
+                    type="button"
+                    aria-label="Abrir submenu Series"
+                    (click)="toggleSubmenu('series', $event)">▾</button>
+
+            <ul class="submenu" (click)="$event.stopPropagation()">
+              <li><a routerLink="/dashboard/en-emision" class="enlace-menu" (click)="onNavLinkClick()">En emisión actualmente</a></li>
+              <li><a routerLink="/dashboard/hoy" class="enlace-menu" (click)="onNavLinkClick()">En emisión hoy</a></li>
+            </ul>
+          </li>
+
+          <li id="hasnt-submenu" routerLink="/dashboard/contacto">
+            <a  class="enlace-menu" (click)="onNavLinkClick()">Contacto</a>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-wrap">
+    <div class="footer-brand">
+      <div class="brand-line">
+        <img src="assets/icons/favicon.png" alt="logo" class="logo-icon" />
+        <span class="site-name">SALA 2</span>
+      </div>
+      <p class="tagline">Películas y series para ver hoy.</p>
+    </div>
+
+    <nav class="footer-links">
+      <div class="col">
+        <h4>Cine</h4>
+        <a routerLink="/dashboard/en-cines">Ahora en cines</a>
+        <a routerLink="/dashboard/proximos-estrenos">Próximos estrenos</a>
+      </div>
+      <div class="col">
+        <h4>Series</h4>
+        <a routerLink="/dashboard/en-emision">En emisión actualmente</a>
+        <a routerLink="/dashboard/hoy">En emisión hoy</a>
+      </div>
+      <div class="col">
+        <h4>Legal</h4>
+        <a routerLink="/terminos">Términos</a>
+        <a routerLink="/privacidad">Privacidad</a>
+        <a routerLink="/cookies">Cookies</a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© {{ currentYear }} SALA 2</span>
+    <span class="tmdb-note">Esta página utiliza la API de TMDB pero no está avalada ni certificada por TMDB.</span>
+  </div>
+</footer>

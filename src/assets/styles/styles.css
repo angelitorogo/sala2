@@ -1,0 +1,9 @@
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+
+/* GENERALES */
+body {
+    color: var(--text-color);
+    background-color: var(--color-background);
+}
+

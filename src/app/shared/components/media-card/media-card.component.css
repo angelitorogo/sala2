@@ -1,0 +1,66 @@
+:host { display: inline-block; }
+
+.card {
+  width: 164px;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+
+  .poster {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    transition: transform .18s ease, box-shadow .18s ease;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #f3f4f6;
+    }
+
+    .badge {
+      position: absolute;
+      left: 10px; bottom: 10px;
+      min-width: 40px; height: 40px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: #0f172a; /* slate-900 */
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    }
+  }
+
+  .title {
+    margin: 10px 2px 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #b6b6b6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .date {
+    margin: 4px 2px 0;
+    color: #7c818d; /* gray-500 */
+    font-size: 1rem;
+  }
+
+  &:hover .poster,
+  &:focus .poster {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+  }
+}

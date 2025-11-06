@@ -1,0 +1,527 @@
+/* NAVBAR */
+.navbar {
+  background: linear-gradient(to bottom, #000000cc, #00000000 30%),
+    url("/assets/images/2.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center 30%;
+  height: 70%;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.container-nav {
+  height: 7rem;
+  max-width: 160rem;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  align-items: center;
+  padding-left: 1.6rem;
+  padding-right: 1.6rem;
+}
+
+/* Contenedor colapsable (desktop = fila) */
+.nav-collapse {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+/* Layout izquierda */
+.logo-menu {
+  display: flex;
+  gap: 10rem;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  height: 7rem;
+  padding-bottom: 5px;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.site-name {
+  color: var(--color-primary);
+  text-shadow: 1px 1px 2px #000, -1px -1px 2px #000000;
+}
+
+/* Menú principal */
+.navbar-menu {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center; /* alineación vertical */
+  gap: 8rem;
+  position: relative;
+  overflow: visible;
+}
+
+/* Botonera derecha */
+.navbar-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+  height: 7rem;
+}
+
+/* ENLACES */
+.enlace-menu {
+  color: var(--color-primary);
+  transition: all 0.2s linear;
+  text-shadow: 1px 1px 2px #000, -1px -1px 2px #000000;
+  display: inline-block;
+  line-height: 1;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 5px; /* reserva borde */
+}
+
+.enlace-menu:hover {
+  color: var(--color-primary-hover);
+  padding-bottom: 5px;
+  border-bottom-color: var(--color-primary);
+}
+
+/* BOTONES */
+.btn {
+  background: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  padding: 1rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .15s linear;
+  text-shadow: 1px 1px 2px #000;
+  text-align: center;
+}
+
+.btn-login {
+  width: 16rem;
+  transition: all 0.1s linear;
+}
+
+.btn-login:hover {
+  background: var(--color-primary);
+  color: #111;
+}
+
+.btn-register {
+  width: 13.5rem;
+  transition: all 0.1s linear;
+}
+
+.btn-register:hover {
+  background: var(--color-primary);
+  color: #111;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 160rem;
+  margin: 0 auto;
+}
+
+/* ===== SUBMENÚS ===== */
+
+/* Cada item del menú puede tener submenu */
+.navbar-menu li {
+  position: relative;
+}
+
+/* Submenu base (cerrado por defecto) */
+.submenu {
+  position: absolute;
+  top: 100%; /* pegado al item */
+  left: 0;
+  min-width: 220px;
+  padding: 10px 8px;
+  margin: 0;
+  list-style: none;
+  background: rgba(15, 23, 42, 0.85); /* fondo oscuro coherente */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  backdrop-filter: blur(6px); /* efecto vidrio */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  display: none;             /* cerrado por defecto */
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity .18s ease, transform .18s ease;
+  z-index: 20;
+  white-space: nowrap;
+  pointer-events: none;      /* se habilita al mostrar */
+}
+
+/* ✅ Mostrar submenú SOLO por clase (controlado por TS) */
+.has-submenu.submenu-open > .submenu {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Bridge eliminado (ya no hay hover) */
+.has-submenu::after {
+  display: none;
+}
+
+/* Enlaces del submenu: heredan estilo del principal */
+.submenu li {
+  margin: 0;
+}
+
+.submenu .enlace-menu {
+  display: block;
+  padding: 10px 14px;
+  color: var(--color-primary);
+  text-shadow: 1px 1px 2px #000, -1px -1px 2px #000000;
+  font-size: inherit;
+  line-height: 1.15;
+  transition: color .15s linear, background-color .15s linear, border-color .15s linear;
+  border-bottom: 2px solid transparent;
+  width: 100%;
+}
+
+.submenu .enlace-menu:hover {
+  color: var(--color-primary-hover);
+  background: rgba(255, 194, 75, 0.08);
+}
+
+/* Usuario logado */
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 7rem;
+  padding-bottom: 5px;
+}
+
+.user-name {
+  color: var(--color-primary);
+  font-weight: 700;
+  text-shadow: 1px 1px 2px #000, -1px -1px 2px #000000;
+  white-space: nowrap;
+  max-width: 24ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-logout {
+  background: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  padding: .6rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .15s linear;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.btn-logout:hover {
+  background: var(--color-primary);
+  color: #111;
+}
+
+/* ===== NUEVOS CONTROLES ===== */
+
+/* Botón hamburger (oculto en desktop) */
+.toggle-btn {
+  display: none;
+  background: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  font-size: 1.8rem;
+  line-height: 1;
+  padding: .6rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  text-shadow: 1px 1px 2px #000;
+}
+
+/* Botón para abrir submenú en móvil (oculto en desktop) */
+.submenu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: .6rem;
+  text-shadow: 1px 1px 2px #000, -1px -1px 2px #000000;
+}
+
+
+
+/* ====== Responsive ====== */
+@media (max-width: 1024px) {
+
+  .navbar {
+    background: linear-gradient(to bottom, #000000cc, #00000000 30%),
+      url("/assets/images/2.png");
+    background-repeat: no-repeat;
+    background-size: 120%;
+    background-position: center 0%;
+    height: 37%;
+  }
+
+  .container-nav {
+    flex-direction: revert;
+  }
+
+  /* Mostrar hamburger */
+  .toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 3.2rem;
+  }
+
+  /* Colapsar: oculto por defecto en móvil */
+  .nav-collapse {
+    position: absolute;
+    top: 5.5rem; /* coincide con la altura del header */
+    left: 0;
+    right: 0;
+    display: none;            /* cerrado por defecto */
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.2rem 1.6rem 2rem;
+    background: rgba(15, 23, 42, 0.92);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(6px);
+    z-index: 30;
+  }
+
+  .nav-collapse.open {
+    display: flex;            /* se abre con la clase .open */
+  }
+
+  /* Ajuste de .logo-menu en columna */
+  .logo-menu {
+    width: 100%;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  .navbar-logo {
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+
+  /* Menú vertical en móvil */
+  .navbar-menu {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: .4rem;
+  }
+
+  .navbar-menu li {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .enlace-menu {
+    display: block;
+    padding: .8rem 0;
+    border: 0px ;
+    transition: all 0s;
+  }
+
+  .enlace-menu:hover {
+    border: 0px;
+    padding-bottom: 8px;
+  }
+
+
+  #hasnt-submenu {
+    display: block;
+  }
+
+  /* Botonera derecha/usuario ocupa ancho completo */
+  .navbar-buttons,
+  .navbar-user {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+  .btn-login,
+  .btn-register,
+  .btn-logout {
+    width: auto;
+  }
+
+  /* Submenús: en móvil también por clase (nada de hover) */
+  .submenu {
+    position: absolute;
+    display: none;
+    opacity: 1;    /* sin animación vertical en móvil */
+    transform: none;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(255,255,255,0.06);
+    margin-left: .8rem;
+    margin-bottom: .4rem;
+    border-radius: 10px;
+    padding: .4rem;
+    pointer-events: auto;
+  }
+
+  .has-submenu.submenu-open > .submenu {
+    display: block;
+  }
+
+  .submenu-toggle {
+    display: inline-block;
+  }
+
+  .has-submenu::after {
+    display: none;
+  }
+
+  .navbar-right {
+    margin-left: auto;
+  }
+
+  .btn-login,
+  .btn-register,
+  .btn-logout {
+    padding: .4rem .8rem;
+    font-size: 1.3rem;
+    width: auto;
+  }
+}
+
+/* ===== FOOTER ===== */
+.site-footer {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 0.70));
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 4rem;
+  color: var(--text-color);
+}
+
+.footer-wrap {
+  max-width: 160rem;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  align-items: start;
+  gap: 6rem;
+}
+
+.footer-brand .brand-line {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.site-footer .logo-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.site-footer .site-name {
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px #000, -1px -1px 2px #000000;
+}
+
+.tagline {
+  margin: .5rem 0 0;
+  color: var(--color-primary);
+  font-size: 1.6rem;
+}
+
+/* columnas de enlaces */
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  column-gap: 4rem;
+  row-gap: 0;
+}
+
+.footer-links .col h4 {
+  margin: 0 0 .8rem;
+  font-size: 1.6rem;
+  color: var(--color-primary);
+  font-weight: 800;
+  text-shadow: 1px 1px 2px #000, -1px -1px 2px #000000;
+}
+
+.footer-links .col a {
+  display: block;
+  color: var(--color-primary);
+  line-height: 1.25;
+  margin: .35rem 0;
+  text-decoration: none;
+  font-size: 1.4rem;
+  transition: color .15s linear, transform .15s ease;
+  text-shadow: 1px 1px 2px #000, -1px -1px 2px #000000;
+}
+
+.footer-links .col a:hover {
+  color: var(--color-primary-hover);
+  transform: translateX(2px);
+}
+
+.footer-bottom {
+  max-width: 160rem;
+  margin: 0 auto;
+  padding: 1rem 2rem 2rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+
+.footer-bottom .tmdb-note {
+  opacity: 0.9;
+  text-align: right;
+}
+
+@media (max-width: 1024px) {
+  .footer-wrap {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .footer-links {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-links {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2rem;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .5rem;
+  }
+
+  .footer-bottom .tmdb-note {
+    text-align: left;
+  }
+}

@@ -1,0 +1,47 @@
+<div class="row">
+  <div class="row-header">
+    <h2>{{ title }}</h2>
+    <button class="more" *ngIf="showMoreButton" (click)="more.emit()">Ver todo</button>
+  </div>
+
+  <div class="rail">
+    <button class="nav left" (click)="scrollBy(-1)">‹</button>
+
+    <div #scroller class="scroller">
+      <a
+        class="card"
+        *ngFor="let it of items; trackBy: trackById"
+        [title]="displayTitle(it)"
+        (click)="onCardClick(it)"
+        role="button"
+        tabindex="0"
+      >
+        <!-- Badges -->
+        <div class="badges">
+          <span class="badge badge-hoy" *ngIf="isToday(it)">HOY</span>
+          <span class="badge badge-nuevo" *ngIf="isNew(it)">NUEVO</span>
+          <span class="badge badge-cine" *ngIf="showCinemaBadge()">CARTELERA</span>
+        </div>
+
+        <div class="img-rating">
+          <img [src]="imageUrl(it, 'w342')" [alt]="displayTitle(it)" loading="lazy">
+        
+          <!-- ⭐ Rating sobre la imagen (abajo-derecha) -->
+          <div class="rating-overlay">
+            ★ {{ vote(it) | number:'1.1-1' }}
+          </div>
+        </div>
+
+        <div class="meta">
+          <span class="name">{{ displayTitle(it) }}</span>
+          <span class="sub">
+            {{ kindOf(it) === 'tv' ? 'Serie' : 'Película' }}
+            <ng-container *ngIf="displayDate(it) as d"> • {{ d | date:'mediumDate' }}</ng-container>
+          </span>
+        </div>
+      </a>
+    </div>
+
+    <button class="nav right" (click)="scrollBy(1)">›</button>
+  </div>
+</div>

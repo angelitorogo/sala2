@@ -1,0 +1,61 @@
+    
+
+    
+<!--
+<a [routerLink]="['/dashboard/home2']"><h3>otra pantalla</h3></a>
+
+<div *ngIf="_authService.isLoggedIn(); else notLoggedIn">
+    <h2>Bienvenido, {{ _authService.user.email }}</h2>
+    <p>Nombre: {{ _authService.user.fullname }}</p>
+    <button (click)="logout()">Cerrar sesión</button>
+</div>
+
+
+<ng-template #notLoggedIn>
+    <h2>No estás logado</h2>
+    <a routerLink="/auth/login">Iniciar sesión</a>
+</ng-template>-->
+
+
+<div class="loading-screen" *ngIf="loading; else loadedContent">
+    <div class="spinner"></div>
+</div>
+
+
+<ng-template #loadedContent>
+
+  <!-- 1 -->
+  <app-media-row title="Tendencias de hoy" [items]="trendingMixed" (selectItem)="onSelect($event)">
+  </app-media-row>
+  <!-- 2 -->
+  <app-media-row title="En cines ahora" [items]="moviesNowPlaying" type="movie" (selectItem)="onSelect($event)">
+  </app-media-row>
+
+  <!-- 3 -->
+  <app-media-row title="En emisión hoy" [items]="tvAiringToday" type="tv" (selectItem)="onSelect($event)">
+  </app-media-row>
+
+  <!-- 4 -->
+  <app-media-row title="Películas populares" [items]="moviesPopular" type="movie" (selectItem)="onSelect($event)">
+  </app-media-row>
+
+  <!-- 5 -->
+  <app-media-row title="Series populares" [items]="tvPopular" type="tv" (selectItem)="onSelect($event)">
+  </app-media-row>
+
+  <!-- 6 -->
+  <app-media-row title="Mejor valoradas" [items]="moviesTopRated" type="movie" (selectItem)="onSelect($event)">
+  </app-media-row>
+
+  <!-- 7) Opcional -->
+  <!-- <app-media-row title="Próximos estrenos" [items]="moviesUpcoming" type="movie" (selectItem)="onSelect($event)"></app-media-row> -->
+
+</ng-template>
+
+
+
+
+
+
+    
+

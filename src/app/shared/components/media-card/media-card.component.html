@@ -1,0 +1,16 @@
+<article class="card" (click)="onClick()" tabindex="0" role="button">
+  <div class="poster">
+
+    
+    <img [src]="posterUrl" [alt]="title" loading="lazy" />
+    <div class="badge" *ngIf="score !== null" [attr.aria-label]="'Valoración ' + score">
+      {{ score }}
+    </div>
+  </div>
+
+  <h3 class="title" [title]="title">{{ title }}</h3>
+
+  <p class="date" *ngIf="date as d">
+    {{ d | date:'d MMM y' : 'UTC' }}
+  </p>
+</article>
