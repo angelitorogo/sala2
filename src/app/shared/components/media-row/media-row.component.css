@@ -87,6 +87,7 @@
   scroll-snap-type: x mandatory;
   scrollbar-width: thin;
   scrollbar-color: var(--color-primary) transparent;
+  margin: 24px clamp(16px, 4vw, 40px);
 }
 
 .scroller > * {

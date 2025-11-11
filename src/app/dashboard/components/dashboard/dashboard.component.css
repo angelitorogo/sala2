@@ -1,11 +1,21 @@
 /* NAVBAR */
 .navbar {
+  background: none;
+   background: linear-gradient(to bottom, #000000cc, #00000000 30%),
+    url("/assets/images/2.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center 66%;
+  height: 7rem;
+}
+
+.navbar.grande { 
+  height: 70%; 
   background: linear-gradient(to bottom, #000000cc, #00000000 30%),
     url("/assets/images/2.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center 30%;
-  height: 70%;
 }
 
 .navbar-right {
@@ -15,7 +25,7 @@
 }
 
 .container-nav {
-  height: 7rem;
+  height: 8rem;
   max-width: 160rem;
   margin: 0 auto;
   display: flex;
@@ -90,6 +100,7 @@
 }
 
 .enlace-menu:hover {
+  cursor: pointer;
   color: var(--color-primary-hover);
   padding-bottom: 5px;
   border-bottom-color: var(--color-primary);
@@ -97,7 +108,7 @@
 
 /* BOTONES */
 .btn {
-  background: transparent;
+  background: #000000b8;
   border: 2px solid var(--color-primary);
   color: var(--color-primary);
   padding: 1rem 1rem;
@@ -150,7 +161,7 @@
   padding: 10px 8px;
   margin: 0;
   list-style: none;
-  background: rgba(15, 23, 42, 0.85); /* fondo oscuro coherente */
+  background: rgba(15, 23, 42, 0.35); /* fondo oscuro coherente */
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   backdrop-filter: blur(6px); /* efecto vidrio */
@@ -159,7 +170,7 @@
   opacity: 0;
   transform: translateY(-6px);
   transition: opacity .18s ease, transform .18s ease;
-  z-index: 20;
+  z-index: 999;
   white-space: nowrap;
   pointer-events: none;      /* se habilita al mostrar */
 }
@@ -271,9 +282,18 @@
     background: linear-gradient(to bottom, #000000cc, #00000000 30%),
       url("/assets/images/2.png");
     background-repeat: no-repeat;
-    background-size: 120%;
+    background-size: 132%;
     background-position: center 0%;
-    height: 37%;
+    height: 40%;
+  }
+
+  .navbar.grande { 
+    background: linear-gradient(to bottom, #000000cc, #00000000 30%),
+      url("/assets/images/2.png");
+    background-repeat: no-repeat;
+    background-size: 132%;
+    background-position: center 0%;
+    height: 40%;
   }
 
   .container-nav {
@@ -298,7 +318,7 @@
     flex-direction: column;
     gap: 2rem;
     padding: 1.2rem 1.6rem 2rem;
-    background: rgba(15, 23, 42, 0.92);
+    background: rgba(15, 23, 42, 0.7);
     border-top: 1px solid rgba(255,255,255,0.08);
     backdrop-filter: blur(6px);
     z-index: 30;

@@ -40,6 +40,6 @@ export class MediaCardComponent {
   }
 
   onClick() {
-    this.select.emit(this.item);
+    //this.select.emit(this.item);
   }
 }

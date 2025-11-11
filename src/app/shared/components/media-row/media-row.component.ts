@@ -9,6 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { MediaItem, MediaType } from '../../models/media-item/media-item.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-media-row',
@@ -27,8 +28,14 @@ export class MediaRowComponent implements AfterViewInit {
 
   @ViewChild('scroller', { static: true }) scrollerRef!: ElementRef<HTMLDivElement>;
 
+
+  constructor(public router: Router) {
+    
+  }
+
   ngAfterViewInit(): void {
     // opcional: ocultar barra si no hay overflow
+    //console.log(this.type)
   }
 
   scrollBy(direction: 1 | -1) {
@@ -39,6 +46,11 @@ export class MediaRowComponent implements AfterViewInit {
 
   onCardClick(item: MediaItem) {
     this.selectItem.emit(item);
+    if (this.kindOf(item) === 'movie') {
+      this.router.navigate(['/dashboard/cine', item.id])
+    } else {
+      this.router.navigate(['/dashboard/series', item.id])
+    }
   }
 
   trackById(index: number, item: any) {
@@ -97,6 +109,6 @@ export class MediaRowComponent implements AfterViewInit {
 
   imageUrl(it: any, size: 'w185' | 'w342' | 'w500' | 'original' = 'w342'): string {
     const path = this.posterPath(it);
-    return path ? `https://image.tmdb.org/t/p/${size}${path}` : 'assets/images/placeholder-poster.svg';
+    return path ? `https://image.tmdb.org/t/p/${size}${path}` : 'assets/images/poster-placeholder.png';
   }
 }

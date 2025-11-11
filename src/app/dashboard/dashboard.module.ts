@@ -7,6 +7,8 @@ import { SharedModule } from '../shared/shared.module';
 import { EnCinesComponent } from './components/en-cines/en-cines.component';
 import { ProximosEstrenosComponent } from './components/proximos-estrenos/proximos-estrenos.component';
 import { FormsModule } from '@angular/forms';
+import { EnEmisionComponent } from './components/en-emision/en-emision.component';
+import { EnEmisionHoyComponent } from './components/en-emision-hoy/en-emision-hoy.component';
 
 
 
@@ -16,6 +18,8 @@ import { FormsModule } from '@angular/forms';
     HomeComponent,
     EnCinesComponent,
     ProximosEstrenosComponent,
+    EnEmisionComponent,
+    EnEmisionHoyComponent,
 
   ],
   imports: [

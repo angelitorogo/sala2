@@ -1,1 +1,115 @@
-<p>proximos-estrenos works!</p>
+<section class="page">
+    <header class="page__header">
+        <div class="brand">
+            <img src="assets/images/sala2.png" alt="" class="brand__icon" />
+            <div class="brand__text">
+                <h1>Próximos estrenos</h1>
+                <p>Películas que llegarán pronto a los cines</p>
+            </div>
+        </div>
+
+        <div class="filters">
+            <div class="filters__row">
+                <div class="field">
+                    <label>Género</label>
+                    <div class="select" [class.open]="openGenre" (keydown)="onKeydown($event, 'genre')">
+                        <button type="button" class="select__button" (click)="toggle('genre')" aria-haspopup="listbox"
+                            [attr.aria-expanded]="openGenre">
+                            {{ getGenreLabel(genreId) }}
+                            <span class="select__chevron" aria-hidden="true"></span>
+                        </button>
+                        <ul class="select__list" role="listbox" *ngIf="openGenre">
+                            <li role="option" class="select__option" [class.is-active]="genreId === null"
+                                (click)="setGenre(null)">Todos</li>
+                            <li role="option" class="select__option" [class.is-active]="genreId === 28"
+                                (click)="setGenre(28)">Acción</li>
+                            <li role="option" class="select__option" [class.is-active]="genreId === 12"
+                                (click)="setGenre(12)">Aventura</li>
+                            <li role="option" class="select__option" [class.is-active]="genreId === 16"
+                                (click)="setGenre(16)">Animación</li>
+                            <li role="option" class="select__option" [class.is-active]="genreId === 35"
+                                (click)="setGenre(35)">Comedia</li>
+                            <li role="option" class="select__option" [class.is-active]="genreId === 18"
+                                (click)="setGenre(18)">Drama</li>
+                            <li role="option" class="select__option" [class.is-active]="genreId === 27"
+                                (click)="setGenre(27)">Terror</li>
+                            <li role="option" class="select__option" [class.is-active]="genreId === 53"
+                                (click)="setGenre(53)">Thriller</li>
+                            <li role="option" class="select__option" [class.is-active]="genreId === 878"
+                                (click)="setGenre(878)">Ciencia ficción</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Ordenar</label>
+                    <div class="select" [class.open]="openSort" (keydown)="onKeydown($event, 'sort')">
+                        <button type="button" class="select__button" (click)="toggle('sort')" aria-haspopup="listbox"
+                            [attr.aria-expanded]="openSort">
+                            {{ getSortLabel(sortBy) }}
+                            <span class="select__chevron" aria-hidden="true"></span>
+                        </button>
+                        <ul class="select__list" role="listbox" *ngIf="openSort">
+                            <li role="option" class="select__option" [class.is-active]="sortBy === 'popularity.desc'"
+                                (click)="setSort('popularity.desc')">Popularidad</li>
+                            <li role="option" class="select__option" [class.is-active]="sortBy === 'vote_average.desc'"
+                                (click)="setSort('vote_average.desc')">Mejor valoradas</li>
+                            <li role="option" class="select__option" [class.is-active]="sortBy === 'release_date.asc'"
+                                (click)="setSort('release_date.asc')">Más recientes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filters__actions">
+                <button class="btn btn--outline" (click)="applyFilters()">Aplicar</button>
+                <button class="btn btn--ghost" (click)="resetFilters()" [disabled]="!usingFilters">Limpiar</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="grid" #gridHost>
+        <div class="state state--error" *ngIf="error">{{ error }}</div>
+
+        <ng-container *ngIf="loading && movies.length === 0">
+            <div class="card skeleton" *ngFor="let s of [1,2,3,4,5,6,7,8,9,10,11,12]"></div>
+        </ng-container>
+
+        <article class="card" *ngFor="let m of movies; trackBy: trackByMovie" [attr.aria-label]="m.title" (click)="onCardClick(m)">
+            <div class="card__media">
+                <img [src]="posterUrl(m.poster_path, 'w500')" [alt]="m.title" loading="lazy" />
+                <span class="badge badge--corner">PRÓXIMAMENTE</span>
+                <span class="rating">
+                    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z">
+                        </path>
+                    </svg>
+                    {{ m.vote_average | number:'1.1-1' }}
+                </span>
+            </div>
+            <div class="card__body">
+                <h3 class="card__title">{{ m.title }}</h3>
+                <div class="card__meta" *ngIf="m.release_date">
+                    <span>Estreno: {{ m.release_date | date:'longDate' }}</span>
+                </div>
+                <a class="btn btn--outline btn--sm" [routerLink]="['/cine', m.id]">Ver detalles</a>
+            </div>
+        </article>
+    </main>
+
+    <div class="loading-screen" *ngIf="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!--
+    <footer class="pager" *ngIf="!loading && movies.length && page < totalPages">
+        <button class="btn btn--outline" (click)="loadMore()">Cargar más</button>
+        <span class="pager__hint">Página {{ page }} de {{ totalPages }}</span>
+    </footer>
+
+    <div class="state state--loading" *ngIf="loading && movies.length > 0">
+        Cargando más…
+    </div>
+    -->
+</section>

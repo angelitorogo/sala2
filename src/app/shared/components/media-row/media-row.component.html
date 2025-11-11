@@ -10,6 +10,7 @@
     <div #scroller class="scroller">
       <a
         class="card"
+        
         *ngFor="let it of items; trackBy: trackById"
         [title]="displayTitle(it)"
         (click)="onCardClick(it)"

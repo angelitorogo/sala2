@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { AuthService } from '../../../auth/services/auth.service';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 
 type SubmenuKey = 'cine' | 'series';
@@ -22,6 +22,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('submenuSeries') submenuSeries!: ElementRef;
   @ViewChild('toggleBtn') toggleBtn!: ElementRef<HTMLElement>;
   isTabletOrMobile = window.innerWidth <= 1024;
+  public isNavbarGrande = true;
 
   submenus: Record<SubmenuKey, boolean> = {
     cine: false,
@@ -34,6 +35,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public authService: AuthService,
     public router: Router,
+    private route: ActivatedRoute,
     private elRef: ElementRef<HTMLElement>,
     private renderer: Renderer2
   ) {
@@ -48,12 +50,17 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     // Cerrar todo al cambiar ruta
     this.routerSub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe(() => this.closeAll());
+      .subscribe(() => {
+        this.updateNavbarCompact();
+        this.closeAll()
+      });
 
   }
 
   ngOnInit(): void {
+
     this.comprobarUser();
+    this.updateNavbarCompact();
   }
 
   ngAfterViewInit(): void {
@@ -130,7 +137,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       next: () => {
         this.authService.setUser(null);
         this.closeAll();
-        this.router.navigate(['/dashboard/home']);
+        //this.router.navigate(['/dashboard/home']);
       },
       error: (error) => console.error('Error al cerrar sesión:', error)
     });
@@ -182,5 +189,17 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostListener('document:keydown.escape')
   onEsc(): void {
     if (this.isMenuOpen || this.anySubmenuOpen()) this.closeAll();
+  }
+
+  private updateNavbarCompact(): void {
+    // 1) Intenta leer la metadata del child más profundo
+    let r: ActivatedRoute | null = this.route;
+    while (r?.firstChild) r = r.firstChild;
+
+    const byData = !!r?.snapshot.data?.['navbarGrande'];
+
+    //console.log(byData)
+
+    this.isNavbarGrande = byData;
   }
 }

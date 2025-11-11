@@ -1,0 +1,140 @@
+<ng-container *ngIf="payload$ | async as m; else loading">
+  <!-- ========== HERO / PORTADA ========== -->
+  <section id="hero" class="hero"
+    [style.background-image]="'url(' + (m.backdrop_path ? 'https://image.tmdb.org/t/p/original' + m.backdrop_path : '') + ')'">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content glass">
+      <div class="poster">
+        <img [src]="m.poster_path ? 'https://image.tmdb.org/t/p/w500' + m.poster_path : 'assets/images/poster-placeholder.png'"
+          [alt]="m.title" loading="lazy" />
+        <div class="rating-badge" *ngIf="m.vote_average as v"> ★ {{ v | number:'1.1-1' }}</div>
+      </div>
+
+      <div class="meta">
+        <h1 class="title">
+          {{ m.title }}
+          <span class="year" *ngIf="m.release_date">({{ m.release_date | date:'yyyy' }})</span>
+        </h1>
+
+        <div class="chips">
+          <span class="chip genre" *ngFor="let g of m.genres">{{ g.name }}</span>
+          <span class="chip outline" *ngIf="m.runtime">{{ m.runtime }} min</span>
+          <span class="chip outline" *ngIf="m.release_date">{{ m.release_date | date }}</span>
+        </div>
+
+        <p class="overview" *ngIf="m.overview">{{ m.overview }}</p>
+
+        <div class="actions">
+          <button class="btn">Añadir a favoritos</button>
+        </div>
+
+        <!-- ========== DÓNDE VER (solo ES) ========== -->
+        <div class="providers" *ngIf="m['watch/providers']?.results?.['ES'] as es">
+          <h3>Dónde ver (España)</h3>
+          <div class="prov-grid">
+            <div class="prov-row" *ngIf="es.buy?.length || es.flatrate?.length; else noProviders">
+
+              <div class="prov-logos">
+                <!-- 👇 Primero los de COMPRA -->
+                <ng-container *ngIf="es.buy?.length">
+                  <div class="prov-group">
+                    <span class="prov-label">Compra:</span>
+                    <img *ngFor="let it of es.buy" [src]="'https://image.tmdb.org/t/p/w92' + it.logo_path"
+                      [alt]="it.provider_name" loading="lazy" class="prov-icon" />
+                  </div>
+                </ng-container>
+
+                <!-- 👇 Luego los de STREAMING -->
+                <ng-container *ngIf="es.flatrate?.length">
+                  <div class="prov-group">
+                    <span class="prov-label">Streaming:</span>
+                    <img *ngFor="let it of es.flatrate" [src]="'https://image.tmdb.org/t/p/w92' + it.logo_path"
+                      [alt]="it.provider_name" loading="lazy" class="prov-icon" />
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+
+            <ng-template #noProviders>
+              <div class="prov-row">
+                <div class="prov-country">ES</div>
+                <div class="prov-logos">—</div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== REPARTO PRINCIPAL ========== -->
+  <section id="cast" class="section" *ngIf="m.credits?.cast?.length">
+    <div class="section-header">
+      <h2>Reparto principal</h2>
+    </div>
+    <div class="row scroller">
+      <div class="person card" *ngFor="let c of m.credits?.cast | slice:0:16">
+        <img
+          [src]="c.profile_path ? 'https://image.tmdb.org/t/p/w300' + c.profile_path : 'assets/images/poster-placeholder.png'"
+          [alt]="c.name" loading="lazy" />
+        <div class="person-name">{{ c.name }}</div>
+        <div class="person-role" *ngIf="c.character">{{ c.character }}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== EQUIPO (solo Director y Productor) ========== -->
+  <section id="crew" class="section" *ngIf="m.credits?.crew?.length">
+    <div class="section-header">
+      <h2>Equipo</h2>
+    </div>
+    <div class="row scroller">
+      <div class="person card" *ngFor="let d of m.credits!.crew | uniqueId:'id'"
+        [hidden]="!(d.job === 'Director' || d.job === 'Producer')">
+        <img
+          [src]="d.profile_path ? 'https://image.tmdb.org/t/p/w300' + d.profile_path : 'assets/images/poster-placeholder.png'"
+          [alt]="d.name" loading="lazy" />
+        <div class="person-name">{{ d.name }}</div>
+        <div class="person-role">{{ d.job }}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TRAILER ========== -->
+  <section id="trailer" class="section" *ngIf="m.videos?.results?.length">
+    <div class="section-header">
+      <h2>Tráiler</h2>
+    </div>
+
+    <div class="trailer-container" *ngIf="getYoutubeTrailer(m) as trailer">
+      <iframe class="trailer-frame" [src]="toSafeYoutubeEmbed(trailer.key)" title="Tráiler oficial" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+        loading="lazy">
+      </iframe>
+    </div>
+  </section>
+
+
+  <!-- ========== RECOMENDACIONES ========== -->
+  <section id="recommendations" class="section" *ngIf="m.recommendations!.results.length > 0">
+    <app-media-row title="Recomendadas" [items]="m.recommendations!.results" type="movie">
+    </app-media-row>
+  </section>
+  
+
+
+  <!-- ========== SIMILARES ========== -->
+  <section id="similar" class="section" *ngIf="m.similar!.results.length > 0">
+    <app-media-row title="Similares" [items]="m.similar!.results" type="movie">
+    </app-media-row>
+  </section>
+</ng-container>
+
+<ng-template #loading>
+  <div class="loading-wrap">
+    <div class="spinner" aria-label="Cargando"></div>
+    <div class="loading-text">Cargando…</div>
+  </div>
+</ng-template>

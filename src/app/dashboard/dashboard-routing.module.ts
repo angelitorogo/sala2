@@ -5,6 +5,10 @@ import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { EnCinesComponent } from './components/en-cines/en-cines.component';
 import { ProximosEstrenosComponent } from './components/proximos-estrenos/proximos-estrenos.component';
+import { EnEmisionComponent } from './components/en-emision/en-emision.component';
+import { EnEmisionHoyComponent } from './components/en-emision-hoy/en-emision-hoy.component';
+import { MovieDetailComponent } from '../shared/components/movie-detail/movie-detail.component';
+import { TvDetailComponent } from '../shared/components/tv-detail/tv-detail.component';
 
 
 const routes: Routes = [
@@ -15,7 +19,8 @@ const routes: Routes = [
     children: [
       {
         path: 'home',
-        component: HomeComponent
+        component: HomeComponent,
+        data: { navbarGrande: true }
       },
       {
         path: 'en-cines',
@@ -24,6 +29,22 @@ const routes: Routes = [
       {
         path: 'proximos-estrenos',
         component: ProximosEstrenosComponent
+      },
+      {
+        path: 'en-emision',
+        component: EnEmisionComponent
+      },
+      {
+        path: 'hoy',
+        component: EnEmisionHoyComponent
+      },
+      {
+        path: 'cine/:id',
+        component: MovieDetailComponent,
+      },
+      {
+        path: 'series/:id',
+        component: TvDetailComponent,
       },
       /*
       {

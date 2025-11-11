@@ -84,6 +84,8 @@ export class HomeComponent implements OnInit, AfterViewInit{
       this.moviesNowPlaying = nowPlaying.results;
       this.tvAiringToday = airingToday.results;
 
+      
+
       // MIX
       const movies = trendingMoviesOnly.results.map(m => ({ ...m, media_type: 'movie' }))
       const tv = trendingTvOnly.results.map(s => ({ ...s, media_type: 'tv' }))
@@ -91,6 +93,8 @@ export class HomeComponent implements OnInit, AfterViewInit{
       this.trendingMixed = [...movies, ...tv]
         .sort((a, b) => b.vote_average - a.vote_average)
         .slice(0, 20);
+
+      //console.log(this.trendingMixed);  
 
       this.loading = false;
     });
@@ -115,7 +119,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
   onSelect(item: MediaItem) {
     // navegar a detalle, por ejemplo
     // this.router.navigate(['/movie', item.id])
-    console.log('select', item);
+    //console.log('select', item);
   }
 
   /*

@@ -14,6 +14,9 @@ export class AuthService {
   csrfToken: string = '';
   private usuario: any = null; // Almacena la información del usuario
 
+  // para que reaccione a cualquier cambio de usuario
+  private _user$ = new BehaviorSubject<any>(null);
+  user$ = this._user$.asObservable();
 
   constructor(private http: HttpClient, private router: Router) { }
 
