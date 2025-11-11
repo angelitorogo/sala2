@@ -70,7 +70,7 @@
       <div class="card skeleton" *ngFor="let s of [1,2,3,4,5,6,7,8,9,10,11,12]"></div>
     </ng-container>
 
-    <article class="card" *ngFor="let s of shows; trackBy: trackByShow" [attr.aria-label]="s.name">
+    <article class="card" *ngFor="let s of shows; trackBy: trackByShow" [attr.aria-label]="s.name" (click)="onCardClick(s)">
       <div class="card__media">
         <img [src]="posterUrl(s.poster_path, 'w500')" [alt]="s.name" loading="lazy" />
         <span class="badge badge--corner">EN EMISIÓN</span>
@@ -86,7 +86,6 @@
         <div class="card__meta" *ngIf="s.first_air_date">
           <span>Desde: {{ s.first_air_date | date:'longDate' }}</span>
         </div>
-        <a class="btn btn--outline btn--sm" [routerLink]="['/serie', s.id]">Ver detalles</a>
       </div>
     </article>
   </main>

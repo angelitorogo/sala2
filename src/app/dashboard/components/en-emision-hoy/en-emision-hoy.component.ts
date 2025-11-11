@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { PaginatedResponse, TvService, TvShow, TvSortOption } from '../../services/tv.service';
 import { Subscription } from 'rxjs';
+import { MediaItem } from '../../../shared/models/media-item/media-item.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-en-emision-hoy',
@@ -31,7 +33,7 @@ export class EnEmisionHoyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private sub?: Subscription;
 
-  constructor(private tvService: TvService) {}
+  constructor(private tvService: TvService,  public router: Router) {}
 
   ngOnInit(): void {
     this.loadFirstPage();
@@ -202,4 +204,10 @@ export class EnEmisionHoyComponent implements OnInit, OnDestroy, AfterViewInit {
       this.openGenre = false; this.openSort = false;
     }
   }
+
+  onCardClick(item: MediaItem) {
+         
+      this.router.navigate(['/dashboard/series', item.id])
+      
+    }
 }

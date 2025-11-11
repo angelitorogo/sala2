@@ -121,10 +121,18 @@
 
 .card:hover {
   cursor: pointer;
-  transform: translateY(-2px);
   border-color: rgba(212, 175, 55, 0.45);
   box-shadow: 0 8px 28px rgba(212, 175, 55, 0.1);
 }
+
+.card img {
+   transition: transform 0.25s;
+}
+
+.card:hover img {
+  transform: scale(1.04);
+}
+
 
 .card__media {
   position: relative;
@@ -199,7 +207,7 @@
   padding: 10px 14px;
   border-radius: 12px;
   font-weight: 700;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   cursor: pointer;
   user-select: none;
 }
