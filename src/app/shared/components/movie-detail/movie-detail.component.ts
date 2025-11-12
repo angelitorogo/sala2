@@ -26,6 +26,7 @@ export class MovieDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const sub = this.payload$.subscribe(payload => {
+      //console.log(payload)
     });
     this.destroyRef.onDestroy(() => sub.unsubscribe());
   }

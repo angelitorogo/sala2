@@ -28,23 +28,23 @@
   <app-media-row title="Tendencias de hoy" [items]="trendingMixed" (selectItem)="onSelect($event)">
   </app-media-row>
   <!-- 2 -->
-  <app-media-row title="En cines ahora" [items]="moviesNowPlaying" type="movie" (selectItem)="onSelect($event)">
+  <app-media-row title="En cines ahora" [items]="moviesNowPlaying" type="movie" (selectItem)="onSelect($event)" [showMoreButton]="true" (more)="onMoreMoviesNowPlaying()">
   </app-media-row>
 
   <!-- 3 -->
-  <app-media-row title="En emisión hoy" [items]="tvAiringToday" type="tv" (selectItem)="onSelect($event)">
+  <app-media-row title="En emisión hoy" [items]="tvAiringToday" type="tv" (selectItem)="onSelect($event)" [showMoreButton]="true" (more)="onMoretvAiringToday()">
   </app-media-row>
 
   <!-- 4 -->
-  <app-media-row title="Películas populares" [items]="moviesPopular" type="movie" (selectItem)="onSelect($event)">
+  <app-media-row title="Películas populares" [items]="moviesPopular" type="movie" (selectItem)="onSelect($event)" [showMoreButton]="true">
   </app-media-row>
 
   <!-- 5 -->
-  <app-media-row title="Series populares" [items]="tvPopular" type="tv" (selectItem)="onSelect($event)">
+  <app-media-row title="Series populares" [items]="tvPopular" type="tv" (selectItem)="onSelect($event)" [showMoreButton]="true" >
   </app-media-row>
 
   <!-- 6 -->
-  <app-media-row title="Mejor valoradas" [items]="moviesTopRated" type="movie" (selectItem)="onSelect($event)">
+  <app-media-row title="Mejor valoradas" [items]="moviesTopRated" type="movie" (selectItem)="onSelect($event)" [showMoreButton]="true">
   </app-media-row>
 
   <!-- 7) Opcional -->

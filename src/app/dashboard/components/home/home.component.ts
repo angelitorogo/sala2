@@ -122,6 +122,15 @@ export class HomeComponent implements OnInit, AfterViewInit{
     //console.log('select', item);
   }
 
+
+  onMoreMoviesNowPlaying() {
+    this._router.navigate(['/dashboard/en-cines']);
+  }
+
+  onMoretvAiringToday() {
+    this._router.navigate(['/dashboard/hoy']);
+  }
+
   /*
 
   // Método para realizar el logout

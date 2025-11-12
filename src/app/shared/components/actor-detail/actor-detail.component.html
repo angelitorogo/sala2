@@ -21,9 +21,10 @@
         <div class="bio" [class.clamp]="!showFullBio" *ngIf="vm.person.biography">
           {{ vm.person.biography }}
         </div>
-        <button class="btn small" *ngIf="vm.person.biography && vm.person.biography.length > 260" (click)="toggleBio()">
+
+        <!--<button class="btn small" *ngIf="vm.person.biography && vm.person.biography.length > 260" (click)="toggleBio()">
           {{ showFullBio ? 'Ver menos' : 'Ver más' }}
-        </button>
+        </button>-->
 
         <div class="aliases" *ngIf="vm.person.also_known_as?.length">
           <span class="label">También conocido como:</span>
@@ -54,6 +55,22 @@
       type="tv">
     </app-media-row>
   </section>
+
+  <!-- PRÓXIMAMENTE (Películas y Series en una sección conjunta) -->
+  <section id="upcoming" class="section" *ngIf="vm.upComing.length">
+    <div class="section-header">
+    </div>
+
+    <!-- Próximamente: Películas -->
+    <app-media-row
+      title="Próximamente"
+      [items]="vm.upComing"
+      type="movie">
+    </app-media-row>
+
+
+  </section>
+
 </ng-container>
 
 <ng-template #loading>
