@@ -75,7 +75,7 @@
       <h2>Reparto principal</h2>
     </div>
     <div class="row scroller">
-      <div class="person card" *ngFor="let c of m.credits?.cast | slice:0:16">
+      <div class="person card" *ngFor="let c of m.credits?.cast | slice:0:16" (click)="onCardClick(c)">
         <img
           [src]="c.profile_path ? 'https://image.tmdb.org/t/p/w300' + c.profile_path : 'assets/images/poster-placeholder.png'"
           [alt]="c.name" loading="lazy" />
@@ -92,7 +92,7 @@
     </div>
     <div class="row scroller">
       <div class="person card" *ngFor="let d of m.credits!.crew | uniqueId:'id'"
-        [hidden]="!(d.job === 'Director' || d.job === 'Producer')">
+        [hidden]="!(d.job === 'Director' || d.job === 'Producer')" (click)="onCardClick(d)">
         <img
           [src]="d.profile_path ? 'https://image.tmdb.org/t/p/w300' + d.profile_path : 'assets/images/poster-placeholder.png'"
           [alt]="d.name" loading="lazy" />

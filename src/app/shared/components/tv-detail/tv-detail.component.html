@@ -70,12 +70,12 @@
   <section id="cast" class="section" *ngIf="t.aggregate_credits?.cast?.length">
     <div class="section-header"><h2>Reparto principal</h2></div>
     <div class="row scroller">
-      <div class="person card" *ngFor="let c of ((t.aggregate_credits?.cast || []) | slice:0:18)">
+      <div class="person card" *ngFor="let c of ((t.aggregate_credits?.cast || []) | slice:0:18)" (click)="onCardClick(c)">
         <img
           [src]="c.profile_path ? 'https://image.tmdb.org/t/p/w300' + c.profile_path : 'assets/images/poster-placeholder.png'"
           [alt]="c.name" loading="lazy" />
         <div class="person-name">{{ c.name }}</div>
-        <div class="person-role" *ngIf="c.roles && c.roles.length">{{ c.roles[0]?.character }}</div>
+        <div class="person-role" *ngIf="c.roles && c.roles.length">{{ c.roles[0].character }}</div>
       </div>
     </div>
   </section>
@@ -84,7 +84,7 @@
   <section id="crew" class="section" *ngIf="t.aggregate_credits?.crew?.length">
     <div class="section-header"><h2>Equipo</h2></div>
     <div class="row scroller">
-      <div class="person card" *ngFor="let d of directorsAndProducers(t)">
+      <div class="person card" *ngFor="let d of directorsAndProducers(t)" (click)="onCardClick(d)">
         <img
           [src]="d.profile_path ? 'https://image.tmdb.org/t/p/w300' + d.profile_path : 'assets/images/poster-placeholder.png'"
           [alt]="d.name" loading="lazy" />
@@ -95,18 +95,22 @@
   </section>
 
   <!-- SEASONS -->
-
   <section id="seasons" class="section" *ngIf="t.seasons.length">
-    <div class="section-header"><h2>Temporadas</h2></div>
+    
+    <div class="section-header"><h2>Temporadas ({{t.seasons.length}})</h2></div>
     <div class="row scroller">
-      <div class="season card" *ngFor="let s of t.seasons">
+      <a
+        class="season card linkify"
+        *ngFor="let s of t.seasons"
+        [routerLink]="['/dashboard','series', t.id, 'season', s.season_number]"
+        [title]="s.name">
         <img
           [src]="s.poster_path ? 'https://image.tmdb.org/t/p/w300' + s.poster_path : 'assets/images/poster-placeholder.png'"
           [alt]="s.name" loading="lazy" />
         <div class="season-name">{{ s.name }}</div>
         <div class="season-ep" *ngIf="s.episode_count">{{ s.episode_count }} eps</div>
         <div class="season-date" *ngIf="s.air_date">{{ s.air_date | date }}</div>
-      </div>
+      </a>
     </div>
   </section>
 

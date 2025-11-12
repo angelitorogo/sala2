@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, DestroyRef, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { filter, map, switchMap } from 'rxjs';
 import { TvAggregateCrew, TvAllDetails, TvService } from '../../../dashboard/services/tv.service';
@@ -15,6 +15,7 @@ export class TvDetailComponent implements OnInit {
   private tv = inject(TvService);
   private destroyRef = inject(DestroyRef);
   private sanitizer = inject(DomSanitizer);
+  private router = inject(Router);
 
   payload$ = this.route.paramMap.pipe(
     map(pm => Number(pm.get('id'))),
@@ -76,4 +77,10 @@ export class TvDetailComponent implements OnInit {
       .filter((j): j is string => !!j && (j === 'Director' || j === 'Producer'));
     return Array.from(new Set(names)).join(', ');
   }
+
+  onCardClick(t: any): void {
+
+    this.router.navigate(['/dashboard/person', t.id])
+
+  } 
 }

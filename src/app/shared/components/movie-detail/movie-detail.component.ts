@@ -1,6 +1,6 @@
 // src/app/features/cine/pages/movie-detail/movie-detail.component.ts
 import { Component, ChangeDetectionStrategy, DestroyRef, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, switchMap } from 'rxjs';
 import { MoviesService } from '../../../dashboard/services/movies.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -16,6 +16,7 @@ export class MovieDetailComponent implements OnInit {
   private movies = inject(MoviesService);
   private destroyRef = inject(DestroyRef);
   private sanitizer = inject(DomSanitizer);
+  private router = inject(Router);
 
   payload$ = this.route.paramMap.pipe(
     map(pm => Number(pm.get('id'))),
@@ -42,4 +43,12 @@ export class MovieDetailComponent implements OnInit {
     const url = `https://www.youtube.com/embed/${key}`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
+
+  onCardClick(c: any): void {
+
+    this.router.navigate(['/dashboard/person', c.id])
+
+  } 
+
+ 
 }

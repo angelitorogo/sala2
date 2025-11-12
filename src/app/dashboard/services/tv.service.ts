@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 const TMDB_BASE = 'https://api.themoviedb.org/3';
 
@@ -163,6 +163,110 @@ export interface TvAllDetails extends TvDetails {
   [key: string]: any;
 }
 
+export interface TvEpisode {
+  id: number;
+  name: string;
+  overview: string;
+  still_path: string | null;
+  episode_number: number;
+  season_number: number;
+  air_date: string | null;
+  runtime?: number | null;
+  vote_average?: number;
+  vote_count?: number;
+  crew?: Array<{ id: number; name: string; job: string; profile_path: string | null }>;
+  guest_stars?: Array<{ id: number; name: string; character?: string; profile_path: string | null }>;
+}
+
+export interface SeasonCastMember {
+  id: number;
+  name: string;
+  character?: string;
+  profile_path?: string | null;
+  credit_id?: string;
+  order?: number;
+}
+
+export interface SeasonCrewMember {
+  id: number;
+  name: string;
+  job?: string;
+  department?: string;
+  profile_path?: string | null;
+  credit_id?: string;
+}
+
+export interface SeasonCreditsResponse {
+  cast: SeasonCastMember[];
+  crew: SeasonCrewMember[];
+}
+
+export interface SeasonImagesResponse {
+  posters: Array<{ file_path: string; width: number; height: number; vote_average: number; vote_count: number }>;
+}
+
+export interface SeasonVideosResponse {
+  results: Array<{
+    id: string;
+    key: string;
+    name: string;
+    site: string;   // 'YouTube'
+    type: string;   // 'Trailer' | 'Teaser' | 'Clip' | ...
+    official?: boolean;
+    published_at?: string;
+    size?: number;
+  }>;
+}
+
+export interface SeasonExternalIds {
+  tvdb_id?: number | null;
+  tvrage_id?: number | null;
+  facebook_id?: string | null;
+  instagram_id?: string | null;
+  twitter_id?: string | null;
+}
+
+export interface TvSeasonDetails {
+  _id?: string;
+  id: number;
+  name: string;
+  overview: string;
+  poster_path: string | null;
+  air_date: string | null;
+  season_number: number;
+  episodes: TvEpisode[];
+}
+
+export interface TvSeasonAllDetails extends TvSeasonDetails {
+  credits?: SeasonCreditsResponse;
+  images?: SeasonImagesResponse;
+  videos?: SeasonVideosResponse;
+  external_ids?: SeasonExternalIds;
+  translations?: {
+    translations: Array<{
+      iso_3166_1: string;
+      iso_639_1: string;
+      name: string;
+      english_name: string;
+      data: { name?: string; overview?: string };
+    }>;
+  };
+
+  [key: string]: any;
+}
+
+export interface TvEpisodeAllDetails extends TvEpisode {
+  credits?: { cast: SeasonCastMember[]; crew: SeasonCrewMember[] };
+  images?: { stills: Array<{ file_path: string; width: number; height: number; vote_average: number; vote_count: number }> };
+  videos?: SeasonVideosResponse;
+  external_ids?: SeasonExternalIds;
+  translations?: any;
+
+  [key: string]: any;
+}
+
+
+
 export type TvSortOption =
   | 'popularity.desc' | 'popularity.asc'
   | 'first_air_date.desc' | 'first_air_date.asc'
@@ -257,4 +361,37 @@ export class TvService {
       params: { append_to_response: APPENDS } as any
     });
   }
+
+  /** ✅ Temporada: TODO en uno (una sola petición) */
+  getSeasonAll(tvId: number, seasonNumber: number): Observable<TvSeasonAllDetails> {
+    const APPENDS = [
+      'credits',
+      'images',
+      'videos',
+      'external_ids',
+      'translations'
+    ].join(',');
+
+    console.log(`${TMDB_BASE}/tv/${tvId}/season/${seasonNumber}`);
+
+    return this.http.get<TvSeasonAllDetails>(
+      `${TMDB_BASE}/tv/${tvId}/season/${seasonNumber}`,
+      { params: { append_to_response: APPENDS } as any }
+    ).pipe(
+      tap( data => {
+        console.log(data)
+      })
+    );
+    // Nota: los episodios vienen en la propiedad "episodes" del propio payload.
+  }
+
+  /** (Opcional) Episodio: TODO en uno */
+  getEpisodeAll(tvId: number, seasonNumber: number, episodeNumber: number): Observable<TvEpisodeAllDetails> {
+    const APPENDS = ['credits', 'images', 'videos', 'external_ids', 'translations'].join(',');
+    return this.http.get<TvEpisodeAllDetails>(
+      `${TMDB_BASE}/tv/${tvId}/season/${seasonNumber}/episode/${episodeNumber}`,
+      { params: { append_to_response: APPENDS } as any }
+    );
+  }
+
 }

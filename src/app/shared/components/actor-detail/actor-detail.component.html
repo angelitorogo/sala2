@@ -1,0 +1,64 @@
+<ng-container *ngIf="person$ | async as vm; else loading">
+  <section id="hero" class="hero" [style.background-image]="heroBg(vm.person)">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content glass">
+      <div class="poster">
+        <img [src]="profileUrl(vm.person)" [alt]="vm.person.name" loading="lazy" />
+      </div>
+
+      <div class="meta">
+        <h1 class="title">
+          {{ vm.person.name }}
+        </h1>
+
+        <div class="chips">
+          <span class="chip outline" *ngIf="vm.person.known_for_department">{{ vm.person.known_for_department }}</span>
+          <span class="chip outline" *ngIf="vm.person.birthday">Nac.: {{ vm.person.birthday | date }}</span>
+          <span class="chip outline" *ngIf="vm.person.place_of_birth">{{ vm.person.place_of_birth }}</span>
+        </div>
+
+        <div class="bio" [class.clamp]="!showFullBio" *ngIf="vm.person.biography">
+          {{ vm.person.biography }}
+        </div>
+        <button class="btn small" *ngIf="vm.person.biography && vm.person.biography.length > 260" (click)="toggleBio()">
+          {{ showFullBio ? 'Ver menos' : 'Ver más' }}
+        </button>
+
+        <div class="aliases" *ngIf="vm.person.also_known_as?.length">
+          <span class="label">También conocido como:</span>
+          <span class="alias" *ngFor="let aka of vm.person.also_known_as | slice:0:6">{{ aka }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PELÍCULAS -->
+  <section id="movies" class="section" *ngIf="vm.moviesCast?.length">
+    <div class="section-header">
+    </div>
+    <app-media-row
+      title="Películas"
+      [items]="vm.moviesCast"
+      type="movie">
+    </app-media-row>
+  </section>
+
+  <!-- SERIES -->
+  <section id="series" class="section" *ngIf="vm.tvCast?.length">
+    <div class="section-header">
+    </div>
+    <app-media-row
+      title="Series"
+      [items]="vm.tvCast"
+      type="tv">
+    </app-media-row>
+  </section>
+</ng-container>
+
+<ng-template #loading>
+  <div class="loading-wrap">
+    <div class="spinner" aria-label="Cargando"></div>
+    <div class="loading-text">Cargando…</div>
+  </div>
+</ng-template>

@@ -9,6 +9,8 @@ import { EnEmisionComponent } from './components/en-emision/en-emision.component
 import { EnEmisionHoyComponent } from './components/en-emision-hoy/en-emision-hoy.component';
 import { MovieDetailComponent } from '../shared/components/movie-detail/movie-detail.component';
 import { TvDetailComponent } from '../shared/components/tv-detail/tv-detail.component';
+import { ActorDetailComponent } from '../shared/components/actor-detail/actor-detail.component';
+import { SeasonDetailComponent } from '../shared/components/season-detail/season-detail.component';
 
 
 const routes: Routes = [
@@ -45,6 +47,14 @@ const routes: Routes = [
       {
         path: 'series/:id',
         component: TvDetailComponent,
+      },
+      {
+        path: 'person/:id',
+        component: ActorDetailComponent
+      },
+      {
+        path: 'series/:id/season/:season',
+        component: SeasonDetailComponent
       },
       /*
       {

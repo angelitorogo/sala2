@@ -1,0 +1,69 @@
+<ng-container *ngIf="vm$ | async as vm; else loading">
+
+  <!-- HERO -->
+  <section id="hero" class="hero" [style.background-image]="heroBg(vm.season)">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content glass">
+      <div class="poster">
+        <img [src]="posterUrl(vm.season.poster_path, 'w500')" [alt]="vm.season.name" loading="lazy" />
+      </div>
+
+      <div class="meta">
+        <h1 class="title">
+          {{ vm.season.name }}
+          <span class="year" *ngIf="vm.season.air_date">({{ vm.season.air_date | date:'yyyy' }})</span>
+        </h1>
+
+        <div class="chips">
+          <span class="chip outline">Temporada #{{ vm.season.season_number }}</span>
+          <span class="chip outline" *ngIf="vm.season.air_date">{{ vm.season.air_date | date }}</span>
+          <span class="chip outline" *ngIf="vm.season.episodes?.length">{{ vm.season.episodes.length }} episodios</span>
+        </div>
+
+        <p class="overview" *ngIf="vm.season.overview">{{ vm.season.overview }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRAILER -->
+  <section id="trailer" class="section" *ngIf="vm.trailer">
+    <div class="section-header"><h2>Tráiler</h2></div>
+    <div class="trailer-container">
+      <iframe
+        class="trailer-frame"
+        [src]="toSafeYoutube(vm.trailer.key)"
+        title="Tráiler de temporada"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen loading="lazy"></iframe>
+    </div>
+  </section>
+
+  <!-- EPISODIOS -->
+  <section id="episodes" class="section" *ngIf="vm.season.episodes?.length">
+    <div class="section-header"><h2>Episodios</h2></div>
+    <div class="episodes-grid">
+      <div class="episode card" *ngFor="let e of vm.season.episodes">
+        <div class="img-wrap">
+          <img [src]="stillUrl(e.still_path)" [alt]="e.name" loading="lazy" />
+          <div class="badge ep-number">#{{ e.episode_number }}</div>
+          <div class="badge rating" *ngIf="e.vote_average as v">★ {{ v | number:'1.0-1' }}</div>
+        </div>
+        <div class="ep-title">{{ e.name }}</div>
+        <div class="ep-meta">
+          <span *ngIf="e.air_date">{{ e.air_date | date }}</span>
+          <span *ngIf="e.runtime">&nbsp;•&nbsp;{{ e.runtime }} min</span>
+        </div>
+        <p class="ep-overview" *ngIf="e.overview">{{ e.overview }}</p>
+      </div>
+    </div>
+  </section>
+
+</ng-container>
+
+<ng-template #loading>
+  <div class="loading-wrap">
+    <div class="spinner" aria-label="Cargando"></div>
+    <div class="loading-text">Cargando…</div>
+  </div>
+</ng-template>
