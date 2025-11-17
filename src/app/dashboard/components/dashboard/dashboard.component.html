@@ -56,6 +56,8 @@
             <ul class="submenu" (click)="$event.stopPropagation()">
               <li><a routerLink="/dashboard/en-cines" class="enlace-menu" (click)="onNavLinkClick()">Ahora en cines</a></li>
               <li><a routerLink="/dashboard/proximos-estrenos" class="enlace-menu" (click)="onNavLinkClick()">Próximos estrenos</a></li>
+              <li><a routerLink="/dashboard/populares" class="enlace-menu" (click)="onNavLinkClick()">Películas populares</a></li>
+              <li><a routerLink="/dashboard/top-rated" class="enlace-menu" (click)="onNavLinkClick()">Películas mejor valoredas</a></li>
             </ul>
           </li>
 
@@ -79,6 +81,7 @@
             <ul class="submenu" (click)="$event.stopPropagation()">
               <li><a routerLink="/dashboard/en-emision" class="enlace-menu" (click)="onNavLinkClick()">En emisión actualmente</a></li>
               <li><a routerLink="/dashboard/hoy" class="enlace-menu" (click)="onNavLinkClick()">En emisión hoy</a></li>
+              <li><a routerLink="/dashboard/series-populares" class="enlace-menu" (click)="onNavLinkClick()">Series populares</a></li>
             </ul>
           </li>
 
@@ -99,7 +102,8 @@
 </div>
 
 <footer class="site-footer">
-  <div class="footer-wrap">
+  <div class="footer-wrap nonExpanded-footer" #footerWrap>
+    <span class="icono" (click)="toogleFooter()" #footerIcon>☰</span>
     <div class="footer-brand">
       <div class="brand-line">
         <img src="assets/icons/favicon.png" alt="logo" class="logo-icon" />
@@ -129,6 +133,7 @@
   </div>
 
   <div class="footer-bottom">
+    <span class="icono bottom" (click)="toogleFooter()" #footerBottom>☰</span>
     <span>© {{ currentYear }} SALA 2</span>
     <span class="tmdb-note">Esta página utiliza la API de TMDB pero no está avalada ni certificada por TMDB.</span>
   </div>

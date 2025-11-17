@@ -21,6 +21,13 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('submenuCine') submenuCine!: ElementRef;
   @ViewChild('submenuSeries') submenuSeries!: ElementRef;
   @ViewChild('toggleBtn') toggleBtn!: ElementRef<HTMLElement>;
+  @ViewChild('footerWrap') footerWrap!: ElementRef<HTMLElement>;
+  @ViewChild('footerIcon') footerIcon!: ElementRef<HTMLElement>;
+  @ViewChild('footerBottom') footerBottom!: ElementRef<HTMLElement>;
+  @ViewChild('container') container!: ElementRef<HTMLElement>;
+  @ViewChild('navBar') navBar!: ElementRef<HTMLElement>;
+   
+   
   isTabletOrMobile = window.innerWidth <= 1024;
   public isNavbarGrande = true;
 
@@ -197,9 +204,18 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     while (r?.firstChild) r = r.firstChild;
 
     const byData = !!r?.snapshot.data?.['navbarGrande'];
+    
+
 
     //console.log(byData)
 
     this.isNavbarGrande = byData;
+  }
+
+  toogleFooter() {
+    this.footerWrap.nativeElement.classList.toggle('nonExpanded-footer')
+    this.footerBottom.nativeElement.classList.toggle('nonExpanded-footer')
+    this.footerIcon.nativeElement.innerHTML == '☰' ?
+      this.footerIcon.nativeElement.innerHTML = '✖' : this.footerIcon.nativeElement.innerHTML = '☰';
   }
 }

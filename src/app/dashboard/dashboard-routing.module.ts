@@ -11,6 +11,9 @@ import { MovieDetailComponent } from '../shared/components/movie-detail/movie-de
 import { TvDetailComponent } from '../shared/components/tv-detail/tv-detail.component';
 import { ActorDetailComponent } from '../shared/components/actor-detail/actor-detail.component';
 import { SeasonDetailComponent } from '../shared/components/season-detail/season-detail.component';
+import { PopularesComponent } from './components/populares/populares.component';
+import { TopRatedComponent } from './components/top-rated/top-rated.component';
+import { SeriesPopularesComponent } from './components/series-populares/series-populares.component';
 
 
 const routes: Routes = [
@@ -39,6 +42,18 @@ const routes: Routes = [
       {
         path: 'hoy',
         component: EnEmisionHoyComponent
+      },
+      {
+        path: 'populares',
+        component: PopularesComponent
+      },
+      {
+        path: 'series-populares',
+        component: SeriesPopularesComponent
+      },
+      {
+        path: 'top-rated',
+        component: TopRatedComponent
       },
       {
         path: 'cine/:id',

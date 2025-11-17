@@ -1,26 +1,37 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Movie, MoviesService, SortOption } from '../../services/movies.service';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import {
+  TvShow,
+  TvService,
+  TvSortOption,
+  PaginatedResponse,
+} from '../../services/tv.service';
 import { Subscription } from 'rxjs';
-import { PaginatedResponse } from '../../services/tv.service';
-import { MediaItem } from '../../../shared/models/media-item/media-item.component';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-en-cines',
-  templateUrl: './en-cines.component.html',
-  styleUrl: './en-cines.component.css'
+  selector: 'app-series-populares',
+  templateUrl: './series-populares.component.html',
+  styleUrl: './series-populares.component.css',
 })
-export class EnCinesComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SeriesPopularesComponent implements OnInit, OnDestroy, AfterViewInit {
   loading = false;
   error: string | null = null;
 
-  movies: Movie[] = [];
+  series: TvShow[] = [];
   page = 1;
   totalPages = 1;
 
-  // Filtros mínimos para cartelera
+  // Filtros para series populares
   genreId: number | null = null;
-  sortBy: SortOption = 'popularity.desc';
+  sortBy: TvSortOption = 'popularity.desc';
 
   openGenre = false;
   openSort = false;
@@ -28,14 +39,13 @@ export class EnCinesComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('gridHost', { static: false }) gridHost!: ElementRef<HTMLElement>;
 
   /** Datos de scroll relativos al <main class="grid"> */
-  gridScrollProgress = 0;      // 0..1 (0 = inicio del main, 1 = final del main)
-  gridInViewport = false;      // el main está visible en la ventana
-  gridNearBottom = false;      // estás cerca del final del main (umbral configurable)
-  
+  gridScrollProgress = 0; // 0..1
+  gridInViewport = false;
+  gridNearBottom = false;
 
   private sub?: Subscription;
 
-  constructor(private moviesService: MoviesService, public router: Router) {}
+  constructor(private tvService: TvService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadFirstPage();
@@ -60,21 +70,20 @@ export class EnCinesComponent implements OnInit, OnDestroy, AfterViewInit {
     const el = this.gridHost?.nativeElement;
     if (!el) return;
 
-    // Dimensiones
-    const viewportTop = window.scrollY || document.documentElement.scrollTop || 0;
-    const viewportH = window.innerHeight || document.documentElement.clientHeight || 0;
+    const viewportTop =
+      window.scrollY || document.documentElement.scrollTop || 0;
+    const viewportH =
+      window.innerHeight || document.documentElement.clientHeight || 0;
 
-    // Posición del main respecto al documento
     const rect = el.getBoundingClientRect();
     const elTopDoc = rect.top + viewportTop;
     const elHeight = el.scrollHeight;
 
-    // ¿Está en viewport?
     const viewportBottom = viewportTop + viewportH;
     const elBottomDoc = elTopDoc + elHeight;
-    this.gridInViewport = elBottomDoc > viewportTop && elTopDoc < viewportBottom;
+    this.gridInViewport =
+      elBottomDoc > viewportTop && elTopDoc < viewportBottom;
 
-    // Progreso de scroll dentro del main (0..1)
     const totalScrollable = Math.max(elHeight - viewportH, 1);
     const current = Math.min(
       Math.max(viewportTop - elTopDoc, 0),
@@ -82,15 +91,11 @@ export class EnCinesComponent implements OnInit, OnDestroy, AfterViewInit {
     );
     this.gridScrollProgress = +(current / totalScrollable).toFixed(4);
 
-    // Cerca del final del main
-    this.gridNearBottom = viewportBottom >= (elBottomDoc - thresholdPx);
+    this.gridNearBottom = viewportBottom >= elBottomDoc - thresholdPx;
 
-    // cargar mas resultados cuando this.gridNearBottom es true
-    if(this.gridNearBottom) {
-      console.log('Cargando más películas...');
+    if (this.gridNearBottom) {
       this.loadMore();
     }
-
   }
 
   ngOnDestroy(): void {
@@ -99,22 +104,24 @@ export class EnCinesComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private _outsideClick = (ev: Event) => {
-  const target = ev.target as HTMLElement;
-  const select = target.closest('.select');
-  if (!select) { this.openGenre = false; this.openSort = false; }
-};
+    const target = ev.target as HTMLElement;
+    const select = target.closest('.select');
+    if (!select) {
+      this.openGenre = false;
+      this.openSort = false;
+    }
+  };
 
   async loadFirstPage(): Promise<void> {
     this.page = 1;
-    this.movies = [];
-    await this.loadMovies(true);
+    this.series = [];
+    await this.loadSeries(true);
   }
 
   async loadMore(): Promise<void> {
     if (this.loading || this.page >= this.totalPages) return;
     this.page += 1;
-    
-    await this.loadMovies(false);
+    await this.loadSeries(false);
   }
 
   async applyFilters(): Promise<void> {
@@ -131,36 +138,34 @@ export class EnCinesComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.genreId !== null || this.sortBy !== 'popularity.desc';
   }
 
-  trackByMovie = (_: number, m: Movie) => m.id;
+  trackBySeries = (_: number, t: TvShow) => t.id;
 
   posterUrl(path: string | null, size: 'w342' | 'w500' = 'w342'): string {
     if (!path) return 'assets/images/poster-placeholder.png';
     return `https://image.tmdb.org/t/p/${size}${path}`;
   }
 
-  private async loadMovies(replace: boolean): Promise<void> {
+  private async loadSeries(replace: boolean): Promise<void> {
     this.loading = true;
     this.error = null;
 
     const source$ = this.usingFilters
-      ? this.moviesService.discoverNowInCinemas({
+      ? this.tvService.discoverPopular({
           page: this.page,
           with_genres: this.genreId,
           sort_by: this.sortBy,
         })
-      : this.moviesService.getNowPlaying(this.page);
+      : this.tvService.getPopular(this.page);
 
     this.sub?.unsubscribe();
     this.sub = source$.subscribe({
-      next: (res: PaginatedResponse<Movie>) => {
+      next: (res: PaginatedResponse<TvShow>) => {
         this.totalPages = res.total_pages ?? 1;
-        this.movies = replace ? res.results : [...this.movies, ...res.results];
+        this.series = replace ? res.results : [...this.series, ...res.results];
         this.loading = false;
-
-        console.log(this.movies)
       },
       error: () => {
-        this.error = 'No se han podido cargar las películas en cartelera.';
+        this.error = 'No se han podido cargar las series populares.';
         this.loading = false;
       },
     });
@@ -182,7 +187,7 @@ export class EnCinesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.applyFilters();
   }
 
-  setSort(val: SortOption) {
+  setSort(val: TvSortOption) {
     this.sortBy = val;
     this.openSort = false;
     this.applyFilters();
@@ -190,32 +195,36 @@ export class EnCinesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getGenreLabel(id: number | null): string {
     const map = new Map<number, string>([
-      [28,'Acción'],[12,'Aventura'],[16,'Animación'],[35,'Comedia'],
-      [18,'Drama'],[27,'Terror'],[53,'Thriller'],[878,'Ciencia ficción'],
+      [16, 'Animación'],
+      [35, 'Comedia'],
+      [18, 'Drama'],
+      [80, 'Crimen'],
+      [9648, 'Misterio'],
+      [10759, 'Acción & Aventura'],
+      [10765, 'Sci-Fi & Fantasía'],
     ]);
-    return id == null ? 'Todos' : (map.get(id) ?? 'Género');
+    return id == null ? 'Todos' : map.get(id) ?? 'Género';
   }
 
-  getSortLabel(s: SortOption): string {
+  getSortLabel(s: TvSortOption): string {
     switch (s) {
-      case 'vote_average.desc': return 'Mejor valoradas';
-      case 'release_date.asc': return 'Más recientes';
-      default: return 'Popularidad';
+      case 'vote_average.desc':
+        return 'Mejor valoradas';
+      case 'first_air_date.desc':
+        return 'Más recientes';
+      default:
+        return 'Popularidad';
     }
   }
 
-  /* Cerrar con teclado y click fuera */
-  onKeydown(e: KeyboardEvent, which: 'genre' | 'sort') {
+  onKeydown(e: KeyboardEvent, _which: 'genre' | 'sort') {
     if (e.key === 'Escape') {
-      this.openGenre = false; this.openSort = false;
+      this.openGenre = false;
+      this.openSort = false;
     }
   }
 
-  onCardClick(item: MediaItem) {
-     
-    this.router.navigate(['/dashboard/cine', item.id])
-    
+  onCardClick(item: TvShow) {
+    this.router.navigate(['/dashboard/series', item.id]);
   }
-
 }
-

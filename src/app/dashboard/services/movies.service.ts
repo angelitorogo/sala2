@@ -337,4 +337,67 @@ export class MoviesService {
       params: { append_to_response: APPENDS } as any
     });
   }
+
+  /** Populares con filtros (género, orden, paginado) */
+  discoverPopular(options: {
+    page?: number;
+    with_genres?: number | null;
+    sort_by?: SortOption;
+  } = {}): Observable<PaginatedResponse<Movie>> {
+    const {
+      page = 1,
+      with_genres = null,
+      sort_by = 'popularity.desc',
+    } = options;
+
+    const params: any = {
+      page,
+      sort_by,
+      include_adult: false,
+    };
+
+    if (with_genres) {
+      params['with_genres'] = with_genres;
+    }
+
+    return this.http.get<PaginatedResponse<Movie>>(
+      `${TMDB_BASE}/discover/movie`,
+      { params }
+    );
+  }
+
+    /**
+   * Descubrir películas mejor valoradas con filtros (género, orden, paginado).
+   * Similar a discoverPopular, pero pensado para “top rated”.
+   */
+  discoverTopRated(options: {
+    page?: number;
+    with_genres?: number | null;
+    sort_by?: SortOption;
+  } = {}): Observable<PaginatedResponse<Movie>> {
+    const {
+      page = 1,
+      with_genres = null,
+      sort_by = 'vote_average.desc',
+    } = options;
+
+    const params: any = {
+      page,
+      sort_by,
+      include_adult: false,
+      // opcional: podrías imitar el /movie/top_rated de TMDB con:
+      // 'vote_count.gte': 200,
+    };
+
+    if (with_genres) {
+      params['with_genres'] = with_genres;
+    }
+
+    return this.http.get<PaginatedResponse<Movie>>(
+      `${TMDB_BASE}/discover/movie`,
+      { params }
+    );
+  }
+
+
 }

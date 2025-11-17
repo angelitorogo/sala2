@@ -39,6 +39,8 @@ export class ActorDetailComponent {
       const movies = this.splitAndSortMovies(person);
       const series = this.splitAndSortSeries(person);
 
+      //console.log(person);
+
       return {
         person,
         // 2) Orden por vote_average desc (ya aplicado dentro)

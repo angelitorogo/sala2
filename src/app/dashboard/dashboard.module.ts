@@ -9,6 +9,9 @@ import { ProximosEstrenosComponent } from './components/proximos-estrenos/proxim
 import { FormsModule } from '@angular/forms';
 import { EnEmisionComponent } from './components/en-emision/en-emision.component';
 import { EnEmisionHoyComponent } from './components/en-emision-hoy/en-emision-hoy.component';
+import { PopularesComponent } from './components/populares/populares.component';
+import { TopRatedComponent } from './components/top-rated/top-rated.component';
+import { SeriesPopularesComponent } from './components/series-populares/series-populares.component';
 
 
 
@@ -20,6 +23,9 @@ import { EnEmisionHoyComponent } from './components/en-emision-hoy/en-emision-ho
     ProximosEstrenosComponent,
     EnEmisionComponent,
     EnEmisionHoyComponent,
+    PopularesComponent,
+    TopRatedComponent,
+    SeriesPopularesComponent,
 
   ],
   imports: [

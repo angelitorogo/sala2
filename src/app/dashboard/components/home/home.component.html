@@ -36,15 +36,15 @@
   </app-media-row>
 
   <!-- 4 -->
-  <app-media-row title="Películas populares" [items]="moviesPopular" type="movie" (selectItem)="onSelect($event)" [showMoreButton]="true">
+  <app-media-row title="Películas populares" [items]="moviesPopular" type="movie" (selectItem)="onSelect($event)" [showMoreButton]="true" (more)="onMorePopulares()">
   </app-media-row>
 
   <!-- 5 -->
-  <app-media-row title="Series populares" [items]="tvPopular" type="tv" (selectItem)="onSelect($event)" [showMoreButton]="true" >
+  <app-media-row title="Series populares" [items]="tvPopular" type="tv" (selectItem)="onSelect($event)" [showMoreButton]="true" (more)="onMoreSeriesPopulares()">
   </app-media-row>
 
   <!-- 6 -->
-  <app-media-row title="Mejor valoradas" [items]="moviesTopRated" type="movie" (selectItem)="onSelect($event)" [showMoreButton]="true">
+  <app-media-row title="Películas mejor valoradas" [items]="moviesTopRated" type="movie" (selectItem)="onSelect($event)" [showMoreButton]="true" (more)="onMoreTopRated()">
   </app-media-row>
 
   <!-- 7) Opcional -->

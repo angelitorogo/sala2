@@ -426,3 +426,27 @@ h3 {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+
+.other-sections {
+  background-color: rgba(0,0,0,0.8);
+  background-blend-mode: multiply;
+  padding-bottom: 5rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.other-sections::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  /* LAYER DE DIFUMINADO */
+  background: radial-gradient(
+    circle,
+    rgba(0,0,0,0) 60%,   /* centro totalmente visible */
+    rgba(0,0,0,0.8) 100% /* bordes oscuros y difuminados */
+  );
+}

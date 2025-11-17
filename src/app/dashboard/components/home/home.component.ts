@@ -131,6 +131,18 @@ export class HomeComponent implements OnInit, AfterViewInit{
     this._router.navigate(['/dashboard/hoy']);
   }
 
+  onMorePopulares() {
+    this._router.navigate(['/dashboard/populares']);
+  }
+
+  onMoreTopRated() {
+    this._router.navigate(['/dashboard/top-rated']);
+  }
+
+  onMoreSeriesPopulares() {
+    this._router.navigate(['/dashboard/series-populares']);
+  }
+
   /*
 
   // Método para realizar el logout

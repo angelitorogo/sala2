@@ -26,7 +26,7 @@ export class MovieDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const sub = this.payload$.subscribe(payload => {
-      //console.log(payload)
+      console.log(payload)
     });
     this.destroyRef.onDestroy(() => sub.unsubscribe());
   }
@@ -43,6 +43,17 @@ export class MovieDetailComponent implements OnInit {
   toSafeYoutubeEmbed(key: string): SafeResourceUrl {
     const url = `https://www.youtube.com/embed/${key}`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+
+  getBackgroundImage(m: any): string {
+    const poster = m?.images?.posters?.[0]?.file_path;
+    const backdrop = m?.backdrop_path;
+
+    const base = 'https://image.tmdb.org/t/p/original';
+
+    if (poster) return `url(${base}${poster})`;
+    if (backdrop) return `url(${base}${backdrop})`;
+    return 'none';
   }
 
   onCardClick(c: any): void {

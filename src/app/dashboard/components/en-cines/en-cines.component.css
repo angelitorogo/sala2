@@ -98,7 +98,7 @@
 /* Grid de cards */
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: clamp(10px, 2vw, 16px);
   margin-top: 18px;
 }
