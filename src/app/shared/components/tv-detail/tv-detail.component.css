@@ -75,7 +75,6 @@ h3 {
   object-fit: cover;
 }
 
-
 .rating-badge {
   position: absolute !important;
   bottom: 5px;
@@ -142,26 +141,69 @@ h3 {
   flex-wrap: wrap;
 }
 
+/* ===== Botones ===== */
+
 .btn {
   background: #000000b8;
-    border: 2px solid var(--color-primary);
-    color: var(--color-primary);
-    padding: 1rem 1rem;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all .15s linear;
-    text-shadow: 1px 1px 2px #000;
-    text-align: center;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  padding: 1rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .15s linear;
+  text-shadow: 1px 1px 2px #000;
+  text-align: center;
 }
 
-.btn:hover {
+.btn:hover:not(:disabled) {
   background: var(--color-primary, #d4af37);
   color: #111;
   transition: .2s;
 }
 
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .btn.outline {
   background: transparent;
+}
+
+/* Botón específico de seguir serie (mismo estilo que favoritos) */
+.btn-fav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  padding-inline: 1.4rem;
+  min-height: 2.6rem;
+}
+
+.btn-fav--active {
+  background: var(--color-primary);
+  color: #111;
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.4);
+}
+
+.btn-icon {
+  font-size: 1rem;
+  transform: translateY(-1px);
+}
+
+.btn-icon.is-active {
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+}
+
+.btn-text {
+  white-space: nowrap;
+}
+
+.hint-login {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  opacity: 0.7;
 }
 
 /* ===== Scrollers / Cards ===== */
@@ -386,8 +428,6 @@ h3 {
   border: none;
 }
 
-
-
 /* ====== SEASONS ====== */
 #seasons {
   margin-top: 2rem;
@@ -403,7 +443,7 @@ h3 {
 
 #seasons .season.card {
   flex: 0 0 auto;
-  width: 220px; /* más pequeña que las cards normales */
+  width: 220px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
@@ -443,8 +483,6 @@ h3 {
   filter: brightness(0.4);
 }
 
-
-
 #seasons .season-name {
   font-weight: 700;
   font-size: 1.2rem;
@@ -455,8 +493,8 @@ h3 {
 
 #seasons .season-ep,
 #seasons .season-date {
-  font-size:1rem;            /* más pequeño */
-  color: #aaa;                   /* tono grisáceo */
+  font-size:1rem;
+  color: #aaa;
   line-height: 1.2;
 }
 
@@ -475,7 +513,7 @@ h3 {
   display: grid;
   place-items: center;
   gap: .75rem;
-  min-height: 50vh;        /* ocupa media pantalla para centrar */
+  min-height: 50vh;
   color: #cfcfcf;
   text-align: center;
 }
@@ -488,8 +526,8 @@ h3 {
 .spinner {
   width: 48px;
   height: 48px;
-  border: 3px solid rgba(255, 215, 0, 0.2);   /* dorado suave */
-  border-top-color: var(--color-primary);     /* dorado fuerte */
+  border: 3px solid rgba(255, 215, 0, 0.2);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin .8s linear infinite;
   box-shadow: 0 0 12px rgba(0,0,0,.25) inset;

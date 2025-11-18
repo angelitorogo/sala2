@@ -10,3 +10,5 @@ export interface MediaItem {
   release_date?: string; // movies
   first_air_date?: string; // tv
 }
+
+

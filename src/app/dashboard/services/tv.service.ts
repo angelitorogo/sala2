@@ -372,14 +372,14 @@ export class TvService {
       'translations'
     ].join(',');
 
-    console.log(`${TMDB_BASE}/tv/${tvId}/season/${seasonNumber}`);
+    //console.log(`${TMDB_BASE}/tv/${tvId}/season/${seasonNumber}`);
 
     return this.http.get<TvSeasonAllDetails>(
       `${TMDB_BASE}/tv/${tvId}/season/${seasonNumber}`,
       { params: { append_to_response: APPENDS } as any }
     ).pipe(
       tap( data => {
-        console.log(data)
+        //console.log(data)
       })
     );
     // Nota: los episodios vienen en la propiedad "episodes" del propio payload.

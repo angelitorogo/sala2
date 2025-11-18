@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
@@ -12,6 +12,7 @@ export class AuthService {
   apiUrl = environment.API_URL;
   private loggedIn = false;
   csrfToken: string = '';
+
   private usuario: any = null; // Almacena la información del usuario
 
   // para que reaccione a cualquier cambio de usuario
@@ -45,42 +46,46 @@ export class AuthService {
   // Método de login
   login(email: string, password: string): Observable<any> {
 
-    // Ya hay un interceptor que le incluye en los header el X-SRCF-Token
-
-    return this.http.post<any>(`${this.apiUrl}/auth/login`,
-         { email, password }, 
-         { withCredentials: true }
-      )
-      .pipe(
-        tap(() => {
-          //console.log('Login exitoso');
-        })
-      );
+    // Ya hay un interceptor que le incluye en los header el X-CSRF-Token
+    return this.http.post<any>(
+      `${this.apiUrl}/auth/login`,
+      { email, password },
+      { withCredentials: true }
+    ).pipe(
+      tap(() => {
+        //console.log('Login exitoso');
+      })
+    );
   }
 
-  // Método de login
-  register(fullname:string, email: string, password: string): Observable<any> {
+  // Método de register
+  register(fullname: string, email: string, password: string): Observable<any> {
 
-    // Ya hay un interceptor que le incluye en los header el X-SRCF-Token
-
-    return this.http.post<any>(`${this.apiUrl}/auth/register`,
-         { fullname, email, password }, 
-         { withCredentials: true }
-      )
-      .pipe(
-        tap(() => {
-          //console.log('Login exitoso');
-        })
-      );
+    // Ya hay un interceptor que le incluye en los header el X-CSRF-Token
+    return this.http.post<any>(
+      `${this.apiUrl}/auth/register`,
+      { fullname, email, password },
+      { withCredentials: true }
+    ).pipe(
+      tap(() => {
+        //console.log('Register exitoso');
+      })
+    );
   }
 
   // Método para realizar el logout
   logout(): Observable<{ message: string }> {
-
-
-    return this.http.post<{ message: string }>(`${this.apiUrl}/auth/logout`,
+    return this.http.post<{ message: string }>(
+      `${this.apiUrl}/auth/logout`,
       {}, // Cuerpo vacío
       { withCredentials: true } // Enviar cookies al backend
+    ).pipe(
+      tap(() => {
+        //console.log('Logout exitoso');
+        this.loggedIn = false;
+        this.usuario = null;
+        this._user$.next(null);          // 👈 avisar al resto de la app
+      })
     );
   }
 
@@ -93,7 +98,10 @@ export class AuthService {
 
   // Método para almacenar localmente la información del usuario
   setUser(user: any) {
+    console.log('setUser en AuthService:', user);
     this.usuario = user;
+    this.loggedIn = !!user;  // 👈 true solo si hay usuario
+    this._user$.next(user);  // 👈 emitir al observable (OnPush reaccionará)
   }
 
   get user(): any {
@@ -101,8 +109,15 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.usuario; // Devuelve true si el usuario está definido
+    return this.loggedIn;
   }
 
+  comprobarUser() {
+    console.log('Comprobando user en authService...');
+    this.getUserInfo().subscribe({
+      next: (response) => this.setUser(response.user),
+      error: () => this.setUser(null),  // 👈 ahora deja loggedIn = false y emite null
+    });
+  }
 
 }

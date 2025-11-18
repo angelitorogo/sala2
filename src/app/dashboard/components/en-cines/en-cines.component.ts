@@ -87,7 +87,7 @@ export class EnCinesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // cargar mas resultados cuando this.gridNearBottom es true
     if(this.gridNearBottom) {
-      console.log('Cargando más películas...');
+      //console.log('Cargando más películas...');
       this.loadMore();
     }
 
@@ -157,7 +157,7 @@ export class EnCinesComponent implements OnInit, OnDestroy, AfterViewInit {
         this.movies = replace ? res.results : [...this.movies, ...res.results];
         this.loading = false;
 
-        console.log(this.movies)
+        //console.log(this.movies)
       },
       error: () => {
         this.error = 'No se han podido cargar las películas en cartelera.';

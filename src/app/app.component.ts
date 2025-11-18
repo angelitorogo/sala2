@@ -21,7 +21,7 @@ export class AppComponent implements OnInit{
   private initializeCsrfToken(): void {
     this._authService.getCsrfToken().subscribe({
       next: (response) => {
-        console.log(response)
+        //console.log(response)
         this._authService.setCsrfToken(response.csrfToken);
       },
       error: (err) => {

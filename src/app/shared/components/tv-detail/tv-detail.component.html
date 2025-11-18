@@ -1,55 +1,118 @@
 <ng-container *ngIf="payload$ | async as t; else loading">
   <!-- HERO -->
-  <section id="hero" class="hero"
-    [style.background-image]="'url(' + (t.backdrop_path ? 'https://image.tmdb.org/t/p/original' + t.backdrop_path : '') + ')'">
+  <section
+    id="hero"
+    class="hero"
+    [style.background-image]="
+      'url(' +
+      (t.backdrop_path
+        ? 'https://image.tmdb.org/t/p/original' + t.backdrop_path
+        : '') +
+      ')'
+    "
+  >
     <div class="hero-overlay"></div>
 
     <div class="hero-content glass">
       <div class="poster">
-        <img [src]="t.poster_path ? 'https://image.tmdb.org/t/p/w500' + t.poster_path : 'assets/images/poster-placeholder.png'"
-             [alt]="t.name" loading="lazy" />
-        <div class="rating-badge" *ngIf="t.vote_average as v"> ★ {{ v | number:'1.1-1' }}</div>
+        <img
+          [src]="
+            t.poster_path
+              ? 'https://image.tmdb.org/t/p/w500' + t.poster_path
+              : 'assets/images/poster-placeholder.png'
+          "
+          [alt]="t.name"
+          loading="lazy"
+        />
+        <div class="rating-badge" *ngIf="t.vote_average as v">
+          ★ {{ v | number : '1.1-1' }}
+        </div>
       </div>
 
       <div class="meta">
         <h1 class="title">
           {{ t.name }}
-          <span class="year" *ngIf="t.first_air_date">({{ t.first_air_date | date:'yyyy' }})</span>
+          <span class="year" *ngIf="t.first_air_date">
+            ({{ t.first_air_date | date : 'yyyy' }})
+          </span>
         </h1>
 
         <div class="chips">
           <span class="chip genre" *ngFor="let g of t.genres">{{ g.name }}</span>
-          <span class="chip outline" *ngIf="t.number_of_seasons">{{ t.number_of_seasons }} temp.</span>
-          <span class="chip outline" *ngIf="t.number_of_episodes">{{ t.number_of_episodes }} eps.</span>
-          <span class="chip outline" *ngIf="t.first_air_date">{{ t.first_air_date | date }}</span>
+          <span class="chip outline" *ngIf="t.number_of_seasons">
+            {{ t.number_of_seasons }} temp.
+          </span>
+          <span class="chip outline" *ngIf="t.number_of_episodes">
+            {{ t.number_of_episodes }} eps.
+          </span>
+          <span class="chip outline" *ngIf="t.first_air_date">
+            {{ t.first_air_date | date }}
+          </span>
         </div>
 
         <p class="overview" *ngIf="t.overview">{{ t.overview }}</p>
 
+        <!-- ========== ACCIONES (SEGUIR SERIE) ========== -->
         <div class="actions">
-          <button class="btn">Seguir serie</button>
+          <button
+            class="btn btn-fav"
+            [class.btn-fav--active]="isFollowed(t)"
+            [disabled]="!(isLoggedIn$ | async)"
+            (click)="onToggleFollow(t)"
+          >
+            <span class="btn-icon" [class.is-active]="isFollowed(t)">★</span>
+            <span class="btn-text">
+              {{
+                isFollowed(t)
+                  ? 'Dejar de seguir'
+                  : 'Seguir serie'
+              }}
+            </span>
+          </button>
+        </div>
+
+        <div class="hint-login" *ngIf="(isLoggedIn$ | async) === false">
+          Debes iniciar sesión para seguir series.
         </div>
 
         <!-- DÓNDE VER (ES: buy + flatrate) -->
-        <div class="providers" *ngIf="t['watch/providers']?.results?.['ES'] as es">
+        <div
+          class="providers"
+          *ngIf="t['watch/providers']?.results?.['ES'] as es"
+        >
           <h3>Dónde ver (España)</h3>
           <div class="prov-grid">
-            <div class="prov-row" *ngIf="es.buy?.length || es.flatrate?.length; else noProviders">
+            <div
+              class="prov-row"
+              *ngIf="es.buy?.length || es.flatrate?.length; else noProviders"
+            >
               <div class="prov-logos">
                 <ng-container *ngIf="es.buy?.length">
                   <div class="prov-group">
                     <span class="prov-label">Compra:</span>
-                    <img *ngFor="let it of es.buy"
-                         [src]="'https://image.tmdb.org/t/p/w92' + it.logo_path"
-                         [alt]="it.provider_name" loading="lazy" class="prov-icon" />
+                    <img
+                      *ngFor="let it of es.buy"
+                      [src]="
+                        'https://image.tmdb.org/t/p/w92' + it.logo_path
+                      "
+                      [alt]="it.provider_name"
+                      loading="lazy"
+                      class="prov-icon"
+                    />
                   </div>
                 </ng-container>
                 <ng-container *ngIf="es.flatrate?.length">
                   <div class="prov-group">
                     <span class="prov-label">Streaming:</span>
-                    <img *ngFor="let it of es.flatrate"
-                         [src]="'https://image.tmdb.org/t/p/w92' + it.logo_path"
-                         [alt]="it.provider_name" loading="lazy" class="prov-icon" />
+                    <img
+                      *ngFor="let it of es.flatrate"
+                      [src]="
+                        'https://image.tmdb.org/t/p/w92' + it.logo_path
+                      "
+                      [alt]="it.provider_name"
+                      loading="lazy"
+                      class="prov-icon"
+                    />
                   </div>
                 </ng-container>
               </div>
@@ -61,33 +124,64 @@
             </ng-template>
           </div>
         </div>
-
       </div>
     </div>
   </section>
 
   <!-- CAST -->
-  <section id="cast" class="section" *ngIf="t.aggregate_credits?.cast?.length">
+  <section
+    id="cast"
+    class="section"
+    *ngIf="t.aggregate_credits?.cast?.length"
+  >
     <div class="section-header"><h2>Reparto principal</h2></div>
     <div class="row scroller">
-      <div class="person card" *ngFor="let c of ((t.aggregate_credits?.cast || []) | slice:0:18)" (click)="onCardClick(c)">
+      <div
+        class="person card"
+        *ngFor="
+          let c of (t.aggregate_credits?.cast || []) | slice : 0 : 18
+        "
+        (click)="onCardClick(c)"
+      >
         <img
-          [src]="c.profile_path ? 'https://image.tmdb.org/t/p/w300' + c.profile_path : 'assets/images/poster-placeholder.png'"
-          [alt]="c.name" loading="lazy" />
+          [src]="
+            c.profile_path
+              ? 'https://image.tmdb.org/t/p/w300' + c.profile_path
+              : 'assets/images/poster-placeholder.png'
+          "
+          [alt]="c.name"
+          loading="lazy"
+        />
         <div class="person-name">{{ c.name }}</div>
-        <div class="person-role" *ngIf="c.roles && c.roles.length">{{ c.roles[0].character }}</div>
+        <div class="person-role" *ngIf="c.roles && c.roles.length">
+          {{ c.roles[0].character }}
+        </div>
       </div>
     </div>
   </section>
 
   <!-- CREW (Director / Producer) -->
-  <section id="crew" class="section" *ngIf="t.aggregate_credits?.crew?.length">
+  <section
+    id="crew"
+    class="section"
+    *ngIf="t.aggregate_credits?.crew?.length"
+  >
     <div class="section-header"><h2>Equipo</h2></div>
     <div class="row scroller">
-      <div class="person card" *ngFor="let d of directorsAndProducers(t)" (click)="onCardClick(d)">
+      <div
+        class="person card"
+        *ngFor="let d of directorsAndProducers(t)"
+        (click)="onCardClick(d)"
+      >
         <img
-          [src]="d.profile_path ? 'https://image.tmdb.org/t/p/w300' + d.profile_path : 'assets/images/poster-placeholder.png'"
-          [alt]="d.name" loading="lazy" />
+          [src]="
+            d.profile_path
+              ? 'https://image.tmdb.org/t/p/w300' + d.profile_path
+              : 'assets/images/poster-placeholder.png'
+          "
+          [alt]="d.name"
+          loading="lazy"
+        />
         <div class="person-name">{{ d.name }}</div>
         <div class="person-role">{{ jobsLabel(d) }}</div>
       </div>
@@ -96,51 +190,87 @@
 
   <!-- SEASONS -->
   <section id="seasons" class="section" *ngIf="t.seasons.length">
-    
-    <div class="section-header"><h2>Temporadas ({{t.seasons.length}})</h2></div>
+    <div class="section-header">
+      <h2>Temporadas ({{ t.seasons.length }})</h2>
+    </div>
     <div class="row scroller">
       <a
         class="season card linkify"
         *ngFor="let s of t.seasons"
-        [routerLink]="['/dashboard','series', t.id, 'season', s.season_number]"
-        [title]="s.name">
+        [routerLink]="[
+          '/dashboard',
+          'series',
+          t.id,
+          'season',
+          s.season_number
+        ]"
+        [title]="s.name"
+      >
         <img
-          [src]="s.poster_path ? 'https://image.tmdb.org/t/p/w300' + s.poster_path : 'assets/images/poster-placeholder.png'"
-          [alt]="s.name" loading="lazy" />
+          [src]="
+            s.poster_path
+              ? 'https://image.tmdb.org/t/p/w300' + s.poster_path
+              : 'assets/images/poster-placeholder.png'
+          "
+          [alt]="s.name"
+          loading="lazy"
+        />
         <div class="season-name">{{ s.name }}</div>
-        <div class="season-ep" *ngIf="s.episode_count">{{ s.episode_count }} eps</div>
-        <div class="season-date" *ngIf="s.air_date">{{ s.air_date | date }}</div>
+        <div class="season-ep" *ngIf="s.episode_count">
+          {{ s.episode_count }} eps
+        </div>
+        <div class="season-date" *ngIf="s.air_date">
+          {{ s.air_date | date }}
+        </div>
       </a>
     </div>
   </section>
 
-
-  <!-- TRAILER -->
-
   <!-- ========== TRAILER ========== -->
-    <section id="trailer" class="section" *ngIf="getBestYoutubeVideo(t) as trailer">
+  <section
+    id="trailer"
+    class="section"
+    *ngIf="getBestYoutubeVideo(t) as trailer"
+  >
     <div class="section-header"><h2>Tráiler</h2></div>
     <div class="trailer-container">
-        <iframe
+      <iframe
         class="trailer-frame"
         [src]="toSafeYoutubeEmbed(trailer.key)"
-        title="{{ trailer.name || 'Tráiler oficial' }}"
+        [title]="trailer.name || 'Tráiler oficial'"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen
-        loading="lazy">
-        </iframe>
+        loading="lazy"
+      >
+      </iframe>
     </div>
-    </section>
+  </section>
 
   <!-- RECOMENDACIONES -->
-  <section id="recommendations" class="section" *ngIf="t.recommendations?.results?.length">
-    <app-media-row title="Recomendadas" [items]="t.recommendations!.results" type="tv"></app-media-row>
+  <section
+    id="recommendations"
+    class="section"
+    *ngIf="t.recommendations?.results?.length"
+  >
+    <app-media-row
+      title="Recomendadas"
+      [items]="t.recommendations!.results"
+      type="tv"
+    ></app-media-row>
   </section>
 
   <!-- SIMILARES -->
-  <section id="similar" class="section" *ngIf="t.similar?.results?.length">
-    <app-media-row title="Similares" [items]="t.similar!.results" type="tv"></app-media-row>
+  <section
+    id="similar"
+    class="section"
+    *ngIf="t.similar?.results?.length"
+  >
+    <app-media-row
+      title="Similares"
+      [items]="t.similar!.results"
+      type="tv"
+    ></app-media-row>
   </section>
 </ng-container>
 

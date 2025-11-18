@@ -1,9 +1,18 @@
 // src/app/features/cine/pages/movie-detail/movie-detail.component.ts
-import { Component, ChangeDetectionStrategy, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  DestroyRef,
+  inject,
+  OnInit
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, switchMap } from 'rxjs';
-import { MoviesService } from '../../../dashboard/services/movies.service';
+import { Movie, MoviesService } from '../../../dashboard/services/movies.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MovieSummary } from '../../models/user-collections/user-collections.model';
+import { UserCollectionsService } from '../../../dashboard/services/user-collections.service';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-movie-detail',
@@ -12,21 +21,30 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MovieDetailComponent implements OnInit {
+
   private route = inject(ActivatedRoute);
+  public authService = inject(AuthService);
   private movies = inject(MoviesService);
   private destroyRef = inject(DestroyRef);
   private sanitizer = inject(DomSanitizer);
   private router = inject(Router);
+  private userCollections = inject(UserCollectionsService);
 
+  // Detalle película
   payload$ = this.route.paramMap.pipe(
     map(pm => Number(pm.get('id'))),
     filter((id): id is number => !!id),
     switchMap(id => this.movies.getAllById(id))
   );
 
+  // 👇 Estado de login REACTIVO (para OnPush)
+  isLoggedIn$ = this.authService.user$.pipe(
+    map(user => !!user)
+  );
+
   ngOnInit(): void {
     const sub = this.payload$.subscribe(payload => {
-      console.log(payload)
+      //console.log(payload)
     });
     this.destroyRef.onDestroy(() => sub.unsubscribe());
   }
@@ -39,7 +57,7 @@ export class MovieDetailComponent implements OnInit {
     ) || null;
   }
 
-  // 👇 NUEVO: convierte la key en una URL segura para <iframe>
+  // 👇 convierte la key en una URL segura para <iframe>
   toSafeYoutubeEmbed(key: string): SafeResourceUrl {
     const url = `https://www.youtube.com/embed/${key}`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
@@ -57,10 +75,24 @@ export class MovieDetailComponent implements OnInit {
   }
 
   onCardClick(c: any): void {
+    this.router.navigate(['/dashboard/person', c.id]);
+  }
 
-    this.router.navigate(['/dashboard/person', c.id])
+  // ===== FAVORITOS =====
 
-  } 
+  onToggleFavorite(movie: Movie): void {
+    const summary: MovieSummary = {
+      id: movie.id,
+      title: movie.title,
+      posterPath: movie.poster_path ?? null,
+      voteAverage: movie.vote_average
+    };
 
- 
+    this.userCollections.toggleMovieFavorite(summary);
+  }
+
+  isFavorite(movie: Movie): boolean {
+    return this.userCollections.isMovieFavorite(movie.id);
+  }
+
 }

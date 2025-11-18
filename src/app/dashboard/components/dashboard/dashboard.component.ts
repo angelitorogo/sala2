@@ -43,7 +43,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     public authService: AuthService,
     public router: Router,
     private route: ActivatedRoute,
-    private elRef: ElementRef<HTMLElement>,
     private renderer: Renderer2
   ) {
 
@@ -65,12 +64,12 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
-    this.comprobarUser();
+    this.authService.comprobarUser();
     this.updateNavbarCompact();
   }
 
   ngAfterViewInit(): void {
+   
     this.navbar = document.getElementById('navbar');
     this.navCollapse = document.getElementById('nav-collapse');
 
@@ -130,13 +129,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   handleScroll(): void {
     this.onNavLinkClick();
     
-  }
-
-  comprobarUser() {
-    this.authService.getUserInfo().subscribe({
-      next: (response) => this.authService.setUser(response.user),
-      error: () => this.authService.setUser(null),
-    });
   }
 
   logout() {
@@ -204,10 +196,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     while (r?.firstChild) r = r.firstChild;
 
     const byData = !!r?.snapshot.data?.['navbarGrande'];
-    
-
-
-    //console.log(byData)
 
     this.isNavbarGrande = byData;
   }
