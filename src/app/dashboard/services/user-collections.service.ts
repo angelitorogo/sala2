@@ -1,99 +1,141 @@
 // src/app/core/services/user-collections.service.ts
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.development';
 import { MovieSummary, TvSummary } from '../../shared/models/user-collections/user-collections.model';
 import { AuthService } from '../../auth/services/auth.service';
+import { catchError, map, of, switchMap, throwError } from 'rxjs';
 
-const STORAGE_MOVIES_KEY = 'sala2_fav_movies';
-const STORAGE_TV_KEY = 'sala2_followed_tv';
+const API_BASE = environment.API_URL;
+
+interface UserCollectionsResponse {
+  movies: MovieSummary[];
+  tv: TvSummary[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class UserCollectionsService {
-  private favMoviesSubject = new BehaviorSubject<MovieSummary[]>([]);
-  favMovies$ = this.favMoviesSubject.asObservable();
 
-  private followedTvSubject = new BehaviorSubject<TvSummary[]>([]);
-  followedTv$ = this.followedTvSubject.asObservable();
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
 
-  constructor(private authService: AuthService) {
-    // Cargamos del storage al iniciar
-    this.loadFromStorage();
+  // ========== HELPERS ==========
+
+  /**
+   * Devuelve true si hay usuario logado con id, false si no.
+   */
+  private hasUser(): boolean {
+    const user = this.authService.user;
+    return !!user && !!user.id;
   }
 
-  // --- Películas favoritas ---
-
-  private loadFromStorage(): void {
-    try {
-      const moviesRaw = localStorage.getItem(STORAGE_MOVIES_KEY);
-      const tvRaw = localStorage.getItem(STORAGE_TV_KEY);
-
-      if (moviesRaw) {
-        this.favMoviesSubject.next(JSON.parse(moviesRaw));
-      }
-      if (tvRaw) {
-        this.followedTvSubject.next(JSON.parse(tvRaw));
-      }
-    } catch (err) {
-      console.error('[UserCollectionsService] Error leyendo localStorage', err);
+  /**
+   * Si no hay usuario, devolvemos un observable que falla con NOT_AUTHENTICATED.
+   */
+  private ensureAuthenticatedOrError() {
+    if (!this.hasUser()) {
+      return false;
     }
+    return true;
   }
 
-  private saveMovies(): void {
-    localStorage.setItem(
-      STORAGE_MOVIES_KEY,
-      JSON.stringify(this.favMoviesSubject.value)
-    );
+  // ========== CARGA COMPLETA (opcional) ==========
+
+  /**
+   * Devuelve TODAS las colecciones del usuario desde el backend.
+   * No guarda nada en memoria, solo devuelve los datos.
+   */
+  loadCollections() {
+    /*
+    if (!this.hasUser()) {
+
+      // Si no hay usuario, devolvemos colecciones vacías
+      const empty: UserCollectionsResponse = { movies: [], tv: [] };
+      return of(empty);
+    }
+      */
+
+    return this.http.get<UserCollectionsResponse>(`${API_BASE}/collections`, {
+      withCredentials: true,
+    });
   }
 
-  private saveTv(): void {
-    localStorage.setItem(
-      STORAGE_TV_KEY,
-      JSON.stringify(this.followedTvSubject.value)
-    );
+  // ========== PELÍCULAS FAVORITAS ==========
+
+  /**
+   * Consulta al backend si una película concreta es favorita.
+   * Estrategia sencilla: pide todas las colecciones y mira si está en movies.
+   * (Más adelante, si quieres, podemos hacer un endpoint /collections/movies/:id)
+   */
+  isMovieFavorite(id: Number) {
+
+    return this.http.post(`${API_BASE}/collections/movies/is-favorite`, {movieId: id});
   }
 
-  isMovieFavorite(id: number): boolean {
-    return this.favMoviesSubject.value.some(m => m.id === id);
-  }
-
-  toggleMovieFavorite(movie: MovieSummary): void {
-    if (!this.authService.user) {
-      // aquí podrías lanzar un modal / navegar al login
+  /**
+   * Llama al backend para alternar favorito (add/remove).
+   * Devuelve 'added' o 'removed'. No mantiene ningún estado en memoria.
+   */
+  toggleMovieFavorite(movie: MovieSummary) {
+    if (!this.hasUser()) {
       console.warn('[UserCollectionsService] Necesita login para favoritos');
-      return;
+      return throwError(() => new Error('NOT_AUTHENTICATED'));
     }
 
-    const current = this.favMoviesSubject.value;
-    const exists = current.some(m => m.id === movie.id);
-
-    const updated = exists
-      ? current.filter(m => m.id !== movie.id)
-      : [...current, movie];
-
-    this.favMoviesSubject.next(updated);
-    this.saveMovies();
+    return this.http.post<{ status: 'added' | 'removed' }>(
+      `${API_BASE}/collections/movies/toggle`,
+      {
+        id: movie.id,
+        title: movie.title,
+        posterPath: movie.posterPath ?? null,
+        voteAverage: movie.voteAverage ?? null,
+      },
+      {
+        withCredentials: true,
+      }
+    ).pipe(
+      map(res => res.status),
+    );
   }
 
-  // --- Series seguidas ---
+  // ========== SERIES SEGUIDAS ==========
 
-  isTvFollowed(id: number): boolean {
-    return this.followedTvSubject.value.some(t => t.id === id);
+  /**
+   * Consulta al backend si una serie concreta está seguida.
+   * Igual que con películas: cargamos colecciones y filtramos.
+   */
+  isTvFollowed(id: number) {
+    
+    return this.http.post(`${API_BASE}/collections/tv/is-favorite`, {tvId: id});
+
   }
 
-  toggleTvFollow(tv: TvSummary): void {
-    if (!this.authService.user) {
+  /**
+   * Alterna el "seguir serie" en el backend.
+   * Devuelve 'added' o 'removed'.
+   */
+  toggleTvFollow(tv: TvSummary) {
+    if (!this.hasUser()) {
       console.warn('[UserCollectionsService] Necesita login para seguir series');
-      return;
+      return throwError(() => new Error('NOT_AUTHENTICATED'));
     }
 
-    const current = this.followedTvSubject.value;
-    const exists = current.some(t => t.id === tv.id);
-
-    const updated = exists
-      ? current.filter(t => t.id !== tv.id)
-      : [...current, tv];
-
-    this.followedTvSubject.next(updated);
-    this.saveTv();
+    return this.http.post<{ status: 'added' | 'removed' }>(
+      `${API_BASE}/collections/tv/toggle`,
+      {
+        id: tv.id,
+        name: tv.name,
+        posterPath: tv.posterPath ?? null,
+        voteAverage: tv.voteAverage ?? null,
+      },
+      {
+        withCredentials: true,
+      }
+    ).pipe(
+      map(res => res.status),
+    );
   }
+
 }

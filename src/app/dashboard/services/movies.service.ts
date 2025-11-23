@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { MovieDetailResponse } from '../../shared/responses/movie-detail.response';
 
 const TMDB_BASE = 'https://api.themoviedb.org/3';
 
@@ -318,7 +319,7 @@ export class MoviesService {
    *
    * Si algún agregado no te interesa, quítalo del string APPENDS.
    */
-  getAllById(movieId: number): Observable<MovieAllDetails> {
+  getAllById(movieId: number): Observable<MovieDetailResponse> {
     const APPENDS =
       [
         'credits',
@@ -333,7 +334,9 @@ export class MoviesService {
         'translations'
       ].join(',');
 
-    return this.http.get<MovieAllDetails>(`${TMDB_BASE}/movie/${movieId}`, {
+    //console.log(`${TMDB_BASE}/movie/${movieId}`)
+
+    return this.http.get<MovieDetailResponse>(`${TMDB_BASE}/movie/${movieId}`, {
       params: { append_to_response: APPENDS } as any
     });
   }

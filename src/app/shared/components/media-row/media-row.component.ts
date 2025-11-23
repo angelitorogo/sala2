@@ -45,6 +45,9 @@ export class MediaRowComponent implements AfterViewInit {
   }
 
   onCardClick(item: MediaItem) {
+
+    //console.log(item)
+
     this.selectItem.emit(item);
     if (this.kindOf(item) === 'movie') {
       this.router.navigate(['/dashboard/cine', item.id])

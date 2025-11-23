@@ -2,23 +2,27 @@
 import {
   Component,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   DestroyRef,
   inject,
   OnInit
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { filter, map, switchMap } from 'rxjs';
+import { map } from 'rxjs';
+
 import {
   TvAggregateCrew,
   TvAllDetails,
   TvService
 } from '../../../dashboard/services/tv.service';
 
-// 👇 NUEVO: para login + colecciones de usuario
+// login + colecciones
 import { AuthService } from '../../../auth/services/auth.service';
 import { UserCollectionsService } from '../../../dashboard/services/user-collections.service';
 import { TvSummary } from '../../models/user-collections/user-collections.model';
+import { TvDetailResponse } from '../../responses/tv-detail.response';
+import { pickBestYoutubeVideo } from '../../helpers/video-utils';
 
 @Component({
   selector: 'app-tv-detail',
@@ -28,73 +32,93 @@ import { TvSummary } from '../../models/user-collections/user-collections.model'
 })
 export class TvDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private tv = inject(TvService);
-  private destroyRef = inject(DestroyRef);
+  private tvService = inject(TvService);
   private sanitizer = inject(DomSanitizer);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
 
-  // 👇 NUEVO
   private authService = inject(AuthService);
   private userCollections = inject(UserCollectionsService);
 
-  // Detalle de la serie
-  payload$ = this.route.paramMap.pipe(
-    map(pm => Number(pm.get('id'))),
-    filter((id): id is number => !!id),
-    switchMap(id => this.tv.getAllById(id))
-  );
-
-  // 👇 NUEVO: estado de login REACTIVO (para OnPush)
+  // Estado de login reactivo (igual que en movie-detail)
   isLoggedIn$ = this.authService.user$.pipe(
     map(user => !!user)
   );
 
+  public tvId!: number;
+  public tvDetails: TvDetailResponse | undefined;
+  public isFollowed: boolean | null = null;
+
   ngOnInit(): void {
-    const sub = this.payload$.subscribe();
+    const sub = this.route.paramMap
+      .pipe(
+        map(pm => Number(pm.get('id'))),
+        map(id => (isNaN(id) ? null : id)),
+      )
+      .subscribe(id => {
+        if (!id) {
+          this.router.navigate(['/dashboard']);
+          return;
+        }
+
+        this.tvId = id;
+        this.loadDetails(id);
+      });
+
     this.destroyRef.onDestroy(() => sub.unsubscribe());
   }
 
-  // ===== Helpers seguros =====
-  getBestYoutubeVideo(m: any) {
-    const all = (m?.videos?.results ?? []).filter(
-      (v: any) => v.site === 'YouTube' && v.key
-    );
+  private loadDetails(id: number): void {
+    // 🔹 1) Reseteamos estado para mostrar loader
+    this.tvDetails = undefined;
+    this.isFollowed = null;
+    this.cdr.markForCheck();
 
-    if (!all.length) return null;
+    // 🔹 2) Petición al backend
+    this.tvService.getAllById(id).subscribe({
+      next: (response) => {
 
-    const typeRank = (t?: string) => {
-      const order = [
-        'Trailer',
-        'Teaser',
-        'Clip',
-        'Featurette',
-        'Behind the Scenes',
-        'Bloopers'
-      ];
-      const i = order.indexOf(t || '');
-      return i === -1 ? 999 : i;
-    };
-    const langRank = (v: any) =>
-      v?.iso_639_1 === 'es' ? 0 : v?.iso_639_1 === 'en' ? 1 : 2;
-
-    // Orden: tipo preferido → official → tamaño → fecha → idioma
-    const sorted = [...all].sort(
-      (a, b) =>
-        typeRank(a.type) - typeRank(b.type) ||
-        Number(b.official === true) - Number(a.official === true) ||
-        (b.size ?? 0) - (a.size ?? 0) ||
-        (Date.parse(b.published_at || '0') -
-          Date.parse(a.published_at || '0')) ||
-        langRank(a) - langRank(b)
-    );
-
-    return sorted[0] || null;
+        //console.log(response)
+        this.tvDetails = response;
+        this.loadFollowStatus(this.tvDetails.id);
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('[TvDetail] Error cargando detalles de la serie', err);
+      },
+    });
   }
 
+  private loadFollowStatus(id: number): void {
+    this.userCollections.isTvFollowed(id).subscribe({
+      next: (status) => {
+        //console.log('[TvDetail] isTvFollowed para id', id, '=>', status);
+        this.isFollowed = !!status;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('[TvDetail] Error al comprobar si está seguida', err);
+      }
+    });
+  }
+
+  // ===== Helpers seguros / YouTube =====
+  getYoutubeTrailer(m: any) {
+    return pickBestYoutubeVideo(m);
+  }
+
+  /*
   toSafeYoutubeEmbed(key: string): SafeResourceUrl {
     return this.sanitizer.bypassSecurityTrustResourceUrl(
       `https://www.youtube.com/embed/${key}`
     );
+  }
+    */
+
+  toSafeYoutubeEmbed(key: string): SafeResourceUrl {
+    const url = `https://www.youtube.com/embed/${key}`;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   uniqueBy<T extends Record<string, any>>(
@@ -107,7 +131,7 @@ export class TvDetailComponent implements OnInit {
     return [...map.values()];
   }
 
-  directorsAndProducers(m: TvAllDetails): TvAggregateCrew[] {
+  directorsAndProducers(m: TvDetailResponse): TvAggregateCrew[] {
     const crew = this.uniqueBy<TvAggregateCrew>(
       m?.aggregate_credits?.crew,
       'id'
@@ -135,9 +159,14 @@ export class TvDetailComponent implements OnInit {
     this.router.navigate(['/dashboard/person', t.id]);
   }
 
-  // ===== SEGUIR SERIE =====
+  // ===== SEGUIR SERIE (igual patrón que favoritos en movie-detail) =====
 
-  onToggleFollow(serie: TvAllDetails): void {
+  onToggleFollow(serie: TvDetailResponse): void {
+    if (!this.authService.user) {
+      console.warn('[TvDetail] Debes iniciar sesión para seguir series');
+      return;
+    }
+
     const summary: TvSummary = {
       id: serie.id,
       name: serie.name,
@@ -145,10 +174,14 @@ export class TvDetailComponent implements OnInit {
       voteAverage: serie.vote_average
     };
 
-    this.userCollections.toggleTvFollow(summary);
-  }
-
-  isFollowed(serie: TvAllDetails): boolean {
-    return this.userCollections.isTvFollowed(serie.id);
+    this.userCollections.toggleTvFollow(summary).subscribe({
+      next: (res) => {
+        //console.log(res);
+        this.loadFollowStatus(serie.id);
+      },
+      error: (err) => {
+        console.error('[TvDetail] Error al alternar seguir serie', err);
+      }
+    });
   }
 }

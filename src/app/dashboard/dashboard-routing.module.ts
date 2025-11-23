@@ -14,6 +14,7 @@ import { SeasonDetailComponent } from '../shared/components/season-detail/season
 import { PopularesComponent } from './components/populares/populares.component';
 import { TopRatedComponent } from './components/top-rated/top-rated.component';
 import { SeriesPopularesComponent } from './components/series-populares/series-populares.component';
+import { FavoritesComponent } from './components/favorites/favorites.component';
 
 
 const routes: Routes = [
@@ -70,6 +71,10 @@ const routes: Routes = [
       {
         path: 'series/:id/season/:season',
         component: SeasonDetailComponent
+      },
+      {
+        path: 'favorites',
+        component: FavoritesComponent
       },
       /*
       {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +27,23 @@ export class AuthService {
     this.csrfToken = response.csrfToken; // Guardar el token
     //console.log('CSRF Token obtenido:', this.csrfToken);
   }
+
+  /*
+  ensureCsrfToken$(): Observable<string> {
+    // Si ya lo tenemos, devolvemos directamente
+    if (this.csrfToken) {
+      return of(this.csrfToken);
+    }
+
+    // Si no, llamamos al endpoint /auth/csrf-token
+    return this.getCsrfToken().pipe(
+      tap((res: any) => {
+        this.csrfToken = res.csrfToken;
+      }),
+      map((res: any) => res.csrfToken)
+    );
+  }
+    */
 
   // Obtener CSRF-Token
   getCsrfToken(): Observable<any> {
@@ -98,7 +115,7 @@ export class AuthService {
 
   // Método para almacenar localmente la información del usuario
   setUser(user: any) {
-    console.log('setUser en AuthService:', user);
+    //console.log('setUser en AuthService:', user);
     this.usuario = user;
     this.loggedIn = !!user;  // 👈 true solo si hay usuario
     this._user$.next(user);  // 👈 emitir al observable (OnPush reaccionará)
@@ -113,7 +130,7 @@ export class AuthService {
   }
 
   comprobarUser() {
-    console.log('Comprobando user en authService...');
+    //console.log('Comprobando user en authService...');
     this.getUserInfo().subscribe({
       next: (response) => this.setUser(response.user),
       error: () => this.setUser(null),  // 👈 ahora deja loggedIn = false y emite null

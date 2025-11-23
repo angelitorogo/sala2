@@ -12,6 +12,7 @@ import { EnEmisionHoyComponent } from './components/en-emision-hoy/en-emision-ho
 import { PopularesComponent } from './components/populares/populares.component';
 import { TopRatedComponent } from './components/top-rated/top-rated.component';
 import { SeriesPopularesComponent } from './components/series-populares/series-populares.component';
+import { FavoritesComponent } from './components/favorites/favorites.component';
 
 
 
@@ -26,6 +27,7 @@ import { SeriesPopularesComponent } from './components/series-populares/series-p
     PopularesComponent,
     TopRatedComponent,
     SeriesPopularesComponent,
+    FavoritesComponent,
 
   ],
   imports: [

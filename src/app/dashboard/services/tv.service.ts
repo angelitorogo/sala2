@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { TvDetailResponse } from '../../shared/responses/tv-detail.response';
 
 const TMDB_BASE = 'https://api.themoviedb.org/3';
 
@@ -344,7 +345,7 @@ export class TvService {
   }
 
   /* ========= ✅ TODO EN UNO (TV) ========= */
-  getAllById(tvId: number): Observable<TvAllDetails> {
+  getAllById(tvId: number): Observable<TvDetailResponse> {
     const APPENDS = [
       'aggregate_credits',
       'videos',
@@ -357,7 +358,7 @@ export class TvService {
       'external_ids',
       'translations'
     ].join(',');
-    return this.http.get<TvAllDetails>(`${TMDB_BASE}/tv/${tvId}`, {
+    return this.http.get<TvDetailResponse>(`${TMDB_BASE}/tv/${tvId}`, {
       params: { append_to_response: APPENDS } as any
     });
   }

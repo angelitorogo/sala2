@@ -1,12 +1,14 @@
 export interface MovieSummary {
-  id: number;              // TMDB id
+  id: number;  
+  movieId?: number;            // TMDB id
   title: string;
   posterPath: string | null;
   voteAverage: number;
 }
 
 export interface TvSummary {
-  id: number;              // TMDB id
+  id: number;  
+  tvId?: number;            // TMDB id
   name: string;
   posterPath: string | null;
   voteAverage: number;

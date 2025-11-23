@@ -1,4 +1,5 @@
-<ng-container *ngIf="payload$ | async as m; else loading">
+<!-- src/app/features/cine/pages/movie-detail/movie-detail.component.html -->
+<ng-container *ngIf="movieDetails as m; else loading">
   <!-- ========== HERO / PORTADA ========== -->
   <section
     id="hero"
@@ -38,29 +39,40 @@
         </h1>
 
         <div class="chips">
-          <span class="chip genre" *ngFor="let g of m.genres">{{ g.name }}</span>
+          <span class="chip genre" *ngFor="let g of m.genres">
+            {{ g.name }}
+          </span>
+
           <span class="chip outline" *ngIf="m.runtime">
             {{ m.runtime }} min
           </span>
+
           <span class="chip outline" *ngIf="m.release_date">
             {{ m.release_date | date }}
           </span>
         </div>
 
-        <p class="overview" *ngIf="m.overview">{{ m.overview }}</p>
+        <p class="overview" *ngIf="m.overview">
+          {{ m.overview }}
+        </p>
 
         <!-- ========== ACCIONES (FAVORITOS) ========== -->
         <div class="actions">
           <button
             class="btn btn-fav"
-            [class.btn-fav--active]="isFavorite(m)"
-            [disabled]="!(isLoggedIn$ | async)"
-            (click)="onToggleFavorite(m)"
+            [class.btn-fav--active]="isFavorite === true"
+            [disabled]="(isLoggedIn$ | async) === false"
+            (click)="movieDetails && onToggleFavorite(movieDetails)"
           >
-            <span class="btn-icon" [class.is-active]="isFavorite(m)">♥</span>
+            <span
+              class="btn-icon"
+              [class.is-active]="isFavorite === true"
+            >
+              ♥
+            </span>
             <span class="btn-text">
               {{
-                isFavorite(m)
+                isFavorite === true
                   ? 'Quitar de favoritos'
                   : 'Añadir a favoritos'
               }}
@@ -84,15 +96,13 @@
               *ngIf="es.buy?.length || es.flatrate?.length; else noProviders"
             >
               <div class="prov-logos">
-                <!-- 👇 Primero los de COMPRA -->
+                <!-- COMPRA -->
                 <ng-container *ngIf="es.buy?.length">
                   <div class="prov-group">
                     <span class="prov-label">Compra:</span>
                     <img
                       *ngFor="let it of es.buy"
-                      [src]="
-                        'https://image.tmdb.org/t/p/w92' + it.logo_path
-                      "
+                      [src]="'https://image.tmdb.org/t/p/w92' + it.logo_path"
                       [alt]="it.provider_name"
                       loading="lazy"
                       class="prov-icon"
@@ -100,15 +110,13 @@
                   </div>
                 </ng-container>
 
-                <!-- 👇 Luego los de STREAMING -->
+                <!-- STREAMING -->
                 <ng-container *ngIf="es.flatrate?.length">
                   <div class="prov-group">
                     <span class="prov-label">Streaming:</span>
                     <img
                       *ngFor="let it of es.flatrate"
-                      [src]="
-                        'https://image.tmdb.org/t/p/w92' + it.logo_path
-                      "
+                      [src]="'https://image.tmdb.org/t/p/w92' + it.logo_path"
                       [alt]="it.provider_name"
                       loading="lazy"
                       class="prov-icon"
@@ -130,17 +138,20 @@
     </div>
   </section>
 
-  <!--<section [style.background-image]="getBackgroundImage(m)">-->
   <div class="other-sections">
     <!-- ========== REPARTO PRINCIPAL ========== -->
-    <section id="cast" class="section" *ngIf="m.credits?.cast?.length">
+    <section
+      id="cast"
+      class="section"
+      *ngIf="m.credits?.cast?.length"
+    >
       <div class="section-header">
         <h2>Reparto principal</h2>
       </div>
       <div class="row scroller">
         <div
           class="person card"
-          *ngFor="let c of m.credits?.cast | slice : 0 : 16"
+          *ngFor="let c of m.credits!.cast | slice : 0 : 16"
           (click)="onCardClick(c)"
         >
           <img
@@ -161,7 +172,11 @@
     </section>
 
     <!-- ========== EQUIPO (solo Director y Productor) ========== -->
-    <section id="crew" class="section" *ngIf="m.credits?.crew?.length">
+    <section
+      id="crew"
+      class="section"
+      *ngIf="m.credits?.crew?.length"
+    >
       <div class="section-header">
         <h2>Equipo</h2>
       </div>
@@ -188,12 +203,19 @@
     </section>
 
     <!-- ========== TRAILER ========== -->
-    <section id="trailer" class="section" *ngIf="m.videos?.results?.length">
+    <section
+      id="trailer"
+      class="section"
+      *ngIf="m.videos?.results?.length"
+    >
       <div class="section-header">
         <h2>Tráiler</h2>
       </div>
 
-      <div class="trailer-container" *ngIf="getYoutubeTrailer(m) as trailer">
+      <div
+        class="trailer-container"
+        *ngIf="getYoutubeTrailer(m) as trailer"
+      >
         <iframe
           class="trailer-frame"
           [src]="toSafeYoutubeEmbed(trailer.key)"
@@ -211,28 +233,32 @@
     <section
       id="recommendations"
       class="section"
-      *ngIf="m.recommendations!.results.length > 0"
+      *ngIf="m.recommendations?.results?.length"
     >
+      
       <app-media-row
         title="Recomendadas"
-        [items]="m.recommendations!.results"
+        [items]="toMediaItems(m.recommendations!.results)"
         type="movie"
       >
       </app-media-row>
+      
     </section>
 
     <!-- ========== SIMILARES ========== -->
     <section
       id="similar"
       class="section"
-      *ngIf="m.similar!.results.length > 0"
+      *ngIf="m.similar?.results?.length"
     >
+      
       <app-media-row
         title="Similares"
-        [items]="m.similar!.results"
+        [items]="toMediaItems(m.similar!.results)"
         type="movie"
       >
       </app-media-row>
+      
     </section>
   </div>
 </ng-container>
