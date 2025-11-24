@@ -219,12 +219,12 @@ export class PopularesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getSortLabel(s: SortOption): string {
     switch (s) {
-      case 'vote_average.desc':
-        return 'Mejor valoradas';
-      case 'release_date.asc':
-        return 'Más recientes';
-      default:
-        return 'Popularidad';
+      case 'vote_average.desc': return 'Mejor valoradas';
+      case 'release_date.desc':  return 'Más próximas';
+      case 'release_date.asc': return 'Más antiguas';
+      case 'popularity.desc':   return 'Popularidad';
+      case 'vote_count.desc':   return 'Más votadas';
+      default:                  return 'Orden';
     }
   }
 

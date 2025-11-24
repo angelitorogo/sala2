@@ -214,14 +214,14 @@ export class TopRatedComponent implements OnInit, OnDestroy, AfterViewInit {
     return id == null ? 'Todos' : map.get(id) ?? 'Género';
   }
 
-  getSortLabel(s: SortOption): string {
+   getSortLabel(s: SortOption): string {
     switch (s) {
-      case 'popularity.desc':
-        return 'Popularidad';
-      case 'release_date.asc':
-        return 'Más recientes';
-      default:
-        return 'Mejor valoradas';
+      case 'vote_average.desc': return 'Mejor valoradas';
+      case 'release_date.asc':  return 'Más antiguas';
+      case 'release_date.desc': return 'Más recientes';
+      case 'popularity.desc':   return 'Popularidad';
+      case 'vote_count.desc':   return 'Más votadas';
+      default:                  return 'Orden';
     }
   }
 

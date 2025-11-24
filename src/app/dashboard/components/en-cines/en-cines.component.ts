@@ -199,8 +199,11 @@ export class EnCinesComponent implements OnInit, OnDestroy, AfterViewInit {
   getSortLabel(s: SortOption): string {
     switch (s) {
       case 'vote_average.desc': return 'Mejor valoradas';
-      case 'release_date.asc': return 'Más recientes';
-      default: return 'Popularidad';
+      case 'release_date.asc':  return 'Más antiguas';
+      case 'release_date.desc': return 'Más recientes';
+      case 'popularity.desc':   return 'Popularidad';
+      case 'vote_count.desc':   return 'Más votadas';
+      default:                  return 'Orden';
     }
   }
 

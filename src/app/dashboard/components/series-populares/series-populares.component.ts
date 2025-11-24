@@ -208,12 +208,12 @@ export class SeriesPopularesComponent implements OnInit, OnDestroy, AfterViewIni
 
   getSortLabel(s: TvSortOption): string {
     switch (s) {
-      case 'vote_average.desc':
-        return 'Mejor valoradas';
-      case 'first_air_date.desc':
-        return 'Más recientes';
-      default:
-        return 'Popularidad';
+      case 'first_air_date.asc':  return 'Más antiguas';
+      case 'first_air_date.desc':  return 'Más recientes';
+      case 'vote_average.desc':   return 'Mejor valoradas';
+      case 'vote_count.desc':     return 'Más votadas';
+      case 'popularity.desc':     return 'Popularidad';
+      default:                    return 'Orden';
     }
   }
 

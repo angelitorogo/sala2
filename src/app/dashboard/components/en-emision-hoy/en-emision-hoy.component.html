@@ -47,10 +47,11 @@
               <span class="select__chevron" aria-hidden="true"></span>
             </button>
             <ul class="select__list" role="listbox" *ngIf="openSort">
-              <li role="option" class="select__option" [class.is-active]="sortBy === 'popularity.desc'"    (click)="setSort('popularity.desc')">Popularidad</li>
-              <li role="option" class="select__option" [class.is-active]="sortBy === 'first_air_date.asc'"  (click)="setSort('first_air_date.asc')">Más recientes</li>
-              <li role="option" class="select__option" [class.is-active]="sortBy === 'vote_average.desc'"   (click)="setSort('vote_average.desc')">Mejor valoradas</li>
-              <li role="option" class="select__option" [class.is-active]="sortBy === 'vote_count.desc'"     (click)="setSort('vote_count.desc')">Más votadas</li>
+              <li role="option" class="select__option" [class.is-active]="sortBy === 'popularity.desc'"     (click)="setSort('popularity.desc')">Popularidad</li>
+              <li role="option" class="select__option" [class.is-active]="sortBy === 'first_air_date.asc'"   (click)="setSort('first_air_date.asc')">Más antiguas</li>
+              <li role="option" class="select__option" [class.is-active]="sortBy === 'first_air_date.desc'"   (click)="setSort('first_air_date.desc')">Más recientes</li>
+              <li role="option" class="select__option" [class.is-active]="sortBy === 'vote_average.desc'"    (click)="setSort('vote_average.desc')">Mejor valoradas</li>
+              <li role="option" class="select__option" [class.is-active]="sortBy === 'vote_count.desc'"      (click)="setSort('vote_count.desc')">Más votadas</li>
             </ul>
           </div>
         </div>

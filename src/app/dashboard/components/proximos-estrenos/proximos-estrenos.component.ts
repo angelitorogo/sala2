@@ -192,8 +192,7 @@ export class ProximosEstrenosComponent implements OnInit, OnDestroy, AfterViewIn
   getSortLabel(s: SortOption): string {
     switch (s) {
       case 'vote_average.desc': return 'Mejor valoradas';
-      case 'release_date.asc':  return 'Más próximas';
-      case 'release_date.desc': return 'Más lejanas';
+      case 'release_date.asc': return 'Más recientes';
       case 'popularity.desc':   return 'Popularidad';
       case 'vote_count.desc':   return 'Más votadas';
       default:                  return 'Orden';

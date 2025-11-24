@@ -122,30 +122,14 @@
               <span class="select__chevron" aria-hidden="true"></span>
             </button>
             <ul class="select__list" role="listbox" *ngIf="openSort">
-              <li
-                role="option"
-                class="select__option"
-                [class.is-active]="sortBy === 'popularity.desc'"
-                (click)="setSort('popularity.desc')"
-              >
-                Popularidad
-              </li>
-              <li
-                role="option"
-                class="select__option"
-                [class.is-active]="sortBy === 'vote_average.desc'"
-                (click)="setSort('vote_average.desc')"
-              >
-                Mejor valoradas
-              </li>
-              <li
-                role="option"
-                class="select__option"
-                [class.is-active]="sortBy === 'release_date.asc'"
-                (click)="setSort('release_date.asc')"
-              >
-                Más recientes
-              </li>
+                <li role="option" class="select__option" [class.is-active]="sortBy === 'popularity.desc'"
+                    (click)="setSort('popularity.desc')">Popularidad</li>
+                <li role="option" class="select__option" [class.is-active]="sortBy === 'vote_average.desc'"
+                    (click)="setSort('vote_average.desc')">Mejor valoradas</li>
+                <li role="option" class="select__option" [class.is-active]="sortBy === 'release_date.asc'"
+                    (click)="setSort('release_date.asc')">Más antiguas</li>
+                <li role="option" class="select__option" [class.is-active]="sortBy === 'release_date.desc'"
+                    (click)="setSort('release_date.desc')">Más recientes</li>
             </ul>
           </div>
         </div>

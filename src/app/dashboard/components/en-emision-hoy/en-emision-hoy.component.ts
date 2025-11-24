@@ -191,7 +191,8 @@ export class EnEmisionHoyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getSortLabel(s: TvSortOption): string {
     switch (s) {
-      case 'first_air_date.asc':  return 'Más recientes';
+      case 'first_air_date.asc':  return 'Más antiguas';
+      case 'first_air_date.desc':  return 'Más recientes';
       case 'vote_average.desc':   return 'Mejor valoradas';
       case 'vote_count.desc':     return 'Más votadas';
       case 'popularity.desc':     return 'Popularidad';
