@@ -141,11 +141,18 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   logout() {
+
+
     this.authService.logout().subscribe({
       next: () => {
         this.authService.setUser(null);
         this.closeAll();
-        //this.router.navigate(['/dashboard/home']);
+
+        if(this.currentUrl == '/dashboard/favorites') {
+          this.router.navigate(['/dashboard/home']);
+        }
+        
+        
       },
       error: (error) => console.error('Error al cerrar sesión:', error)
     });
