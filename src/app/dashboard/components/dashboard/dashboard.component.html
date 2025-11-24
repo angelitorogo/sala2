@@ -8,7 +8,7 @@
 
     <ng-container *ngIf="!authService.isLoggedIn(); else loggedBlock">
       <div class="navbar-buttons navbar-right">
-        <a [routerLink]="['/auth/login']" class="btn btn-login">Iniciar Sesión</a>
+        <a [routerLink]="['/auth/login']" [queryParams]="{ returnUrl: currentUrl }" class="btn btn-login">Iniciar Sesión</a>
         <a [routerLink]="['/auth/register']" class="btn btn-register">Registrarse</a>
       </div>
     </ng-container>
@@ -94,6 +94,8 @@
     </div>
   </div>
 </nav>
+
+
 
 
 

@@ -26,6 +26,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('footerBottom') footerBottom!: ElementRef<HTMLElement>;
   @ViewChild('container') container!: ElementRef<HTMLElement>;
   @ViewChild('navBar') navBar!: ElementRef<HTMLElement>;
+
+  public currentUrl = '';
+  public currentRoutePath = '';
    
    
   isTabletOrMobile = window.innerWidth <= 1024;
@@ -47,25 +50,31 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
 
     
-    window.addEventListener('resize', () => {
-      window.innerWidth <= 1024 ? this.isTabletOrMobile = true : this.isTabletOrMobile = false;
-      //console.log(this.isTabletOrMobile)
-    });
-    
-
-    // Cerrar todo al cambiar ruta
-    this.routerSub = this.router.events
-      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe(() => {
-        this.updateNavbarCompact();
-        this.closeAll()
+      window.addEventListener('resize', () => {
+        window.innerWidth <= 1024 ? this.isTabletOrMobile = true : this.isTabletOrMobile = false;
+        //console.log(this.isTabletOrMobile)
       });
+      
 
-  }
+      // Cerrar todo al cambiar ruta
+      this.routerSub = this.router.events
+        .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+        .subscribe((event) => {
+          // URL completa después de redirecciones
+          this.currentUrl = event.urlAfterRedirects;
+          // Actualizamos el modo de navbar
+          this.updateNavbarCompact();
+          // Cerramos menús
+          this.closeAll();
+        });
+
+    }
 
   ngOnInit(): void {
     this.authService.comprobarUser();
     this.updateNavbarCompact();
+    // URL actual al cargar el componente
+    this.currentUrl = this.router.url;
   }
 
   ngAfterViewInit(): void {

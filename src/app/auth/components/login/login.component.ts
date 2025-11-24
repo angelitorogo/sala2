@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -8,18 +8,27 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
 
   formLogin: FormGroup;
+  returnUrl: string | null = null;
 
   constructor(private fb: FormBuilder,
               private _router: Router,
-              private _authService: AuthService
+              private _authService: AuthService,
+              private route: ActivatedRoute
   ) {
     this.formLogin = this.fb.group({
       email: new FormControl('angelitorogo@hotmail.com',[Validators.required, Validators.email]),
       password: new FormControl('Rod00gom!',Validators.required),
     });
+  }
+  ngOnInit(): void {
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    if (this.returnUrl) {
+      // decodificar la URL (%2F → /)
+      this.returnUrl = decodeURIComponent(this.returnUrl);
+    }
   }
 
 
@@ -29,7 +38,8 @@ export class LoginComponent {
 
     this._authService.login(email, password).subscribe({
       next: () => {
-        this._router.navigate(['/dashboard/home']);
+        const redirectTo = this.returnUrl || '/dashboard/home';
+        this._router.navigateByUrl(redirectTo);
       },
       error: (err) => {
         const error = 'Login fallido: ' + (err.error.message || 'Error desconocido');
