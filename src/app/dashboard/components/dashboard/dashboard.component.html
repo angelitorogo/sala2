@@ -85,7 +85,7 @@
             </ul>
           </li>
 
-          <li id="hasnt-submenu" routerLink="/dashboard/favorites">
+          <li *ngIf="authService.isLoggedIn()" id="hasnt-submenu" routerLink="/dashboard/favorites">
             <a  class="enlace-menu" (click)="onNavLinkClick()">Favoritos</a>
           </li>
         </ul>
