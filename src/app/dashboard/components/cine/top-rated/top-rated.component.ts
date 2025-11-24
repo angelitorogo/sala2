@@ -8,30 +8,31 @@ import {
   ViewChild,
 } from '@angular/core';
 import {
-  TvShow,
-  TvService,
-  TvSortOption,
+  Movie,
+  MoviesService,
+  SortOption,
   PaginatedResponse,
-} from '../../services/tv.service';
+} from '../../../services/movies.service';
 import { Subscription } from 'rxjs';
+import { MediaItem } from '../../../../shared/models/media-item/media-item.component';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-series-populares',
-  templateUrl: './series-populares.component.html',
-  styleUrl: './series-populares.component.css',
+  selector: 'app-top-rated',
+  templateUrl: './top-rated.component.html',
+  styleUrl: './top-rated.component.css',
 })
-export class SeriesPopularesComponent implements OnInit, OnDestroy, AfterViewInit {
+export class TopRatedComponent implements OnInit, OnDestroy, AfterViewInit {
   loading = false;
   error: string | null = null;
 
-  series: TvShow[] = [];
+  movies: Movie[] = [];
   page = 1;
   totalPages = 1;
 
-  // Filtros para series populares
+  // Filtros para mejor valoradas
   genreId: number | null = null;
-  sortBy: TvSortOption = 'popularity.desc';
+  sortBy: SortOption = 'vote_average.desc';
 
   openGenre = false;
   openSort = false;
@@ -39,13 +40,13 @@ export class SeriesPopularesComponent implements OnInit, OnDestroy, AfterViewIni
   @ViewChild('gridHost', { static: false }) gridHost!: ElementRef<HTMLElement>;
 
   /** Datos de scroll relativos al <main class="grid"> */
-  gridScrollProgress = 0; // 0..1
-  gridInViewport = false;
-  gridNearBottom = false;
+  gridScrollProgress = 0; // 0..1 (0 = inicio del main, 1 = final del main)
+  gridInViewport = false; // el main está visible en la ventana
+  gridNearBottom = false; // estás cerca del final del main (umbral configurable)
 
   private sub?: Subscription;
 
-  constructor(private tvService: TvService, private router: Router) {}
+  constructor(private moviesService: MoviesService, public router: Router) {}
 
   ngOnInit(): void {
     this.loadFirstPage();
@@ -70,20 +71,24 @@ export class SeriesPopularesComponent implements OnInit, OnDestroy, AfterViewIni
     const el = this.gridHost?.nativeElement;
     if (!el) return;
 
+    // Dimensiones
     const viewportTop =
       window.scrollY || document.documentElement.scrollTop || 0;
     const viewportH =
       window.innerHeight || document.documentElement.clientHeight || 0;
 
+    // Posición del main respecto al documento
     const rect = el.getBoundingClientRect();
     const elTopDoc = rect.top + viewportTop;
     const elHeight = el.scrollHeight;
 
+    // ¿Está en viewport?
     const viewportBottom = viewportTop + viewportH;
     const elBottomDoc = elTopDoc + elHeight;
     this.gridInViewport =
       elBottomDoc > viewportTop && elTopDoc < viewportBottom;
 
+    // Progreso de scroll dentro del main (0..1)
     const totalScrollable = Math.max(elHeight - viewportH, 1);
     const current = Math.min(
       Math.max(viewportTop - elTopDoc, 0),
@@ -91,8 +96,10 @@ export class SeriesPopularesComponent implements OnInit, OnDestroy, AfterViewIni
     );
     this.gridScrollProgress = +(current / totalScrollable).toFixed(4);
 
+    // Cerca del final del main
     this.gridNearBottom = viewportBottom >= elBottomDoc - thresholdPx;
 
+    // cargar más resultados cuando this.gridNearBottom es true
     if (this.gridNearBottom) {
       this.loadMore();
     }
@@ -114,14 +121,14 @@ export class SeriesPopularesComponent implements OnInit, OnDestroy, AfterViewIni
 
   async loadFirstPage(): Promise<void> {
     this.page = 1;
-    this.series = [];
-    await this.loadSeries(true);
+    this.movies = [];
+    await this.loadMovies(true);
   }
 
   async loadMore(): Promise<void> {
     if (this.loading || this.page >= this.totalPages) return;
     this.page += 1;
-    await this.loadSeries(false);
+    await this.loadMovies(false);
   }
 
   async applyFilters(): Promise<void> {
@@ -130,42 +137,42 @@ export class SeriesPopularesComponent implements OnInit, OnDestroy, AfterViewIni
 
   async resetFilters(): Promise<void> {
     this.genreId = null;
-    this.sortBy = 'popularity.desc';
+    this.sortBy = 'vote_average.desc';
     await this.loadFirstPage();
   }
 
   get usingFilters(): boolean {
-    return this.genreId !== null || this.sortBy !== 'popularity.desc';
+    return this.genreId !== null || this.sortBy !== 'vote_average.desc';
   }
 
-  trackBySeries = (_: number, t: TvShow) => t.id;
+  trackByMovie = (_: number, m: Movie) => m.id;
 
   posterUrl(path: string | null, size: 'w342' | 'w500' = 'w342'): string {
     if (!path) return 'assets/images/poster-placeholder.png';
     return `https://image.tmdb.org/t/p/${size}${path}`;
   }
 
-  private async loadSeries(replace: boolean): Promise<void> {
+  private async loadMovies(replace: boolean): Promise<void> {
     this.loading = true;
     this.error = null;
 
     const source$ = this.usingFilters
-      ? this.tvService.discoverPopular({
+      ? this.moviesService.discoverTopRated({
           page: this.page,
           with_genres: this.genreId,
           sort_by: this.sortBy,
         })
-      : this.tvService.getPopular(this.page);
+      : this.moviesService.getTopRated(this.page);
 
     this.sub?.unsubscribe();
     this.sub = source$.subscribe({
-      next: (res: PaginatedResponse<TvShow>) => {
+      next: (res: PaginatedResponse<Movie>) => {
         this.totalPages = res.total_pages ?? 1;
-        this.series = replace ? res.results : [...this.series, ...res.results];
+        this.movies = replace ? res.results : [...this.movies, ...res.results];
         this.loading = false;
       },
       error: () => {
-        this.error = 'No se han podido cargar las series populares.';
+        this.error = 'No se han podido cargar las películas mejor valoradas.';
         this.loading = false;
       },
     });
@@ -187,7 +194,7 @@ export class SeriesPopularesComponent implements OnInit, OnDestroy, AfterViewIni
     this.applyFilters();
   }
 
-  setSort(val: TvSortOption) {
+  setSort(val: SortOption) {
     this.sortBy = val;
     this.openSort = false;
     this.applyFilters();
@@ -195,36 +202,37 @@ export class SeriesPopularesComponent implements OnInit, OnDestroy, AfterViewIni
 
   getGenreLabel(id: number | null): string {
     const map = new Map<number, string>([
+      [28, 'Acción'],
+      [12, 'Aventura'],
       [16, 'Animación'],
       [35, 'Comedia'],
       [18, 'Drama'],
-      [80, 'Crimen'],
-      [9648, 'Misterio'],
-      [10759, 'Acción & Aventura'],
-      [10765, 'Sci-Fi & Fantasía'],
+      [27, 'Terror'],
+      [53, 'Thriller'],
+      [878, 'Ciencia ficción'],
     ]);
     return id == null ? 'Todos' : map.get(id) ?? 'Género';
   }
 
-  getSortLabel(s: TvSortOption): string {
+   getSortLabel(s: SortOption): string {
     switch (s) {
-      case 'first_air_date.asc':  return 'Más antiguas';
-      case 'first_air_date.desc':  return 'Más recientes';
-      case 'vote_average.desc':   return 'Mejor valoradas';
-      case 'vote_count.desc':     return 'Más votadas';
-      case 'popularity.desc':     return 'Popularidad';
-      default:                    return 'Orden';
+      case 'vote_average.desc': return 'Mejor valoradas';
+      case 'release_date.asc':  return 'Más antiguas';
+      case 'release_date.desc': return 'Más recientes';
+      case 'popularity.desc':   return 'Popularidad';
+      case 'vote_count.desc':   return 'Más votadas';
+      default:                  return 'Orden';
     }
   }
 
-  onKeydown(e: KeyboardEvent, _which: 'genre' | 'sort') {
+  onKeydown(e: KeyboardEvent, which: 'genre' | 'sort') {
     if (e.key === 'Escape') {
       this.openGenre = false;
       this.openSort = false;
     }
   }
 
-  onCardClick(item: TvShow) {
-    this.router.navigate(['/dashboard/series', item.id]);
+  onCardClick(item: MediaItem) {
+    this.router.navigate(['/dashboard/cine', item.id]);
   }
 }

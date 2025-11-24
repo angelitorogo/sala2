@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Movie, MoviesService, SortOption, PaginatedResponse } from '../../services/movies.service';
+import { Movie, MoviesService, SortOption, PaginatedResponse } from '../../../services/movies.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { MediaItem } from '../../../shared/models/media-item/media-item.component';
+import { MediaItem } from '../../../../shared/models/media-item/media-item.component';
 
 @Component({
   selector: 'app-proximos-estrenos',

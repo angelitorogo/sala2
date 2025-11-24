@@ -3,18 +3,19 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from '../guards/auth.guard';
-import { EnCinesComponent } from './components/en-cines/en-cines.component';
-import { ProximosEstrenosComponent } from './components/proximos-estrenos/proximos-estrenos.component';
-import { EnEmisionComponent } from './components/en-emision/en-emision.component';
-import { EnEmisionHoyComponent } from './components/en-emision-hoy/en-emision-hoy.component';
+import { EnCinesComponent } from './components/cine/en-cines/en-cines.component';
+import { ProximosEstrenosComponent } from './components/cine/proximos-estrenos/proximos-estrenos.component';
+import { EnEmisionComponent } from './components/series/en-emision/en-emision.component';
+import { EnEmisionHoyComponent } from './components/series/en-emision-hoy/en-emision-hoy.component';
 import { MovieDetailComponent } from '../shared/components/movie-detail/movie-detail.component';
 import { TvDetailComponent } from '../shared/components/tv-detail/tv-detail.component';
 import { ActorDetailComponent } from '../shared/components/actor-detail/actor-detail.component';
 import { SeasonDetailComponent } from '../shared/components/season-detail/season-detail.component';
-import { PopularesComponent } from './components/populares/populares.component';
-import { TopRatedComponent } from './components/top-rated/top-rated.component';
-import { SeriesPopularesComponent } from './components/series-populares/series-populares.component';
+import { PopularesComponent } from './components/cine/populares/populares.component';
+import { TopRatedComponent } from './components/cine/top-rated/top-rated.component';
+import { SeriesPopularesComponent } from './components/series/series-populares/series-populares.component';
 import { FavoritesComponent } from './components/favorites/favorites.component';
+import { ContactComponent } from './components/contact/contact.component';
 
 
 const routes: Routes = [
@@ -75,6 +76,10 @@ const routes: Routes = [
       {
         path: 'favorites',
         component: FavoritesComponent
+      },
+      {
+        path: 'contacto',
+        component: ContactComponent
       },
       /*
       {

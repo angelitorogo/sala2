@@ -12,9 +12,9 @@ import {
   MoviesService,
   SortOption,
   PaginatedResponse,
-} from '../../services/movies.service';
+} from '../../../services/movies.service';
 import { Subscription } from 'rxjs';
-import { MediaItem } from '../../../shared/models/media-item/media-item.component';
+import { MediaItem } from '../../../../shared/models/media-item/media-item.component';
 import { Router } from '@angular/router';
 
 @Component({

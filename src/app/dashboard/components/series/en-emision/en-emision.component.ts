@@ -1,15 +1,15 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { PaginatedResponse, TvService, TvShow, TvSortOption } from '../../services/tv.service';
+import { PaginatedResponse, TvService, TvShow, TvSortOption } from '../../../services/tv.service';
 import { Subscription } from 'rxjs';
-import { MediaItem } from '../../../shared/models/media-item/media-item.component';
+import { MediaItem } from '../../../../shared/models/media-item/media-item.component';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-en-emision-hoy',
-  templateUrl: './en-emision-hoy.component.html',
-  styleUrls: ['./en-emision-hoy.component.css']
+  selector: 'app-en-emision',
+  templateUrl: './en-emision.component.html',
+  styleUrls: ['./en-emision.component.css']
 })
-export class EnEmisionHoyComponent implements OnInit, OnDestroy, AfterViewInit {
+export class EnEmisionComponent implements OnInit, OnDestroy, AfterViewInit {
   loading = false;
   error: string | null = null;
 
@@ -69,21 +69,26 @@ export class EnEmisionHoyComponent implements OnInit, OnDestroy, AfterViewInit {
     const el = this.gridHost?.nativeElement;
     if (!el) return;
 
+    // Dimensiones
     const viewportTop = window.scrollY || document.documentElement.scrollTop || 0;
     const viewportH = window.innerHeight || document.documentElement.clientHeight || 0;
 
+    // Posición del main respecto al documento
     const rect = el.getBoundingClientRect();
     const elTopDoc = rect.top + viewportTop;
     const elHeight = el.scrollHeight;
 
+    // ¿Está en viewport?
     const viewportBottom = viewportTop + viewportH;
     const elBottomDoc = elTopDoc + elHeight;
     this.gridInViewport = elBottomDoc > viewportTop && elTopDoc < viewportBottom;
 
+    // Progreso 0..1
     const totalScrollable = Math.max(elHeight - viewportH, 1);
     const current = Math.min(Math.max(viewportTop - elTopDoc, 0), totalScrollable);
     this.gridScrollProgress = +(current / totalScrollable).toFixed(4);
 
+    // Cerca del final
     this.gridNearBottom = viewportBottom >= (elBottomDoc - thresholdPx);
 
     if (this.gridNearBottom && !this.loading && this.page < this.totalPages) {
@@ -124,20 +129,20 @@ export class EnEmisionHoyComponent implements OnInit, OnDestroy, AfterViewInit {
     return `https://image.tmdb.org/t/p/${size}${path}`;
   }
 
-  /** Sin filtros => endpoint oficial airing_today
-   *  Con filtros/orden => discoverAiringToday() (ventana = hoy) para respetar sort_by.
+  /** Sin filtros => endpoint oficial on_the_air
+   *  Con filtros/orden => discoverOnAir() para que TMDB respete sort_by (ventana de fechas).
    */
   private async loadShows(replace: boolean): Promise<void> {
     this.loading = true;
     this.error = null;
 
     const source$ = this.usingFilters
-      ? this.tvService.discoverAiringToday({
+      ? this.tvService.discoverOnAir({
           page: this.page,
           with_genres: this.genreId,
           sort_by: this.sortBy
         })
-      : this.tvService.getAiringToday(this.page);
+      : this.tvService.getOnTheAir(this.page);
 
     this.sub?.unsubscribe();
     this.sub = source$.subscribe({
@@ -147,7 +152,7 @@ export class EnEmisionHoyComponent implements OnInit, OnDestroy, AfterViewInit {
         this.loading = false;
       },
       error: () => {
-        this.error = 'No se han podido cargar las series en emisión hoy.';
+        this.error = 'No se han podido cargar las series en emisión.';
         this.loading = false;
       }
     });
@@ -207,8 +212,9 @@ export class EnEmisionHoyComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onCardClick(item: MediaItem) {
-         
-      this.router.navigate(['/dashboard/series', item.id])
-      
-    }
+       
+    this.router.navigate(['/dashboard/series', item.id])
+    
+  }
+  
 }
