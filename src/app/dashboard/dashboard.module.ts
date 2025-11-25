@@ -14,7 +14,11 @@ import { TopRatedComponent } from './components/cine/top-rated/top-rated.compone
 import { SeriesPopularesComponent } from './components/series/series-populares/series-populares.component';
 import { FavoritesComponent } from './components/favorites/favorites.component';
 import { ContactComponent } from './components/contact/contact.component';
-
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
+import { TermsPrivacyComponent } from './components/terms-privacy/terms-privacy.component';
+import { CookiesSettingsComponent } from './components/cookies-settings/cookies-settings.component';
+import { CookieBannerComponent } from './components/cookie-banner/cookie-banner.component';
+import { ManualAdComponent } from './components/manual-ad/manual-ad.component';
 
 
 @NgModule({
@@ -30,6 +34,9 @@ import { ContactComponent } from './components/contact/contact.component';
     SeriesPopularesComponent,
     FavoritesComponent,
     ContactComponent,
+    TermsPrivacyComponent,
+    CookiesSettingsComponent,
+    ManualAdComponent,
 
   ],
   imports: [
@@ -38,6 +45,9 @@ import { ContactComponent } from './components/contact/contact.component';
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-  ]
+    RecaptchaModule,
+    RecaptchaFormsModule,
+  ],
+
 })
 export class DashboardModule { }

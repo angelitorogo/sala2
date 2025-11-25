@@ -1,0 +1,14 @@
+<ng-container *ngIf="cookiePrefs.hasConsent('ads'); else adsBlocked">
+  <ins class="adsbygoogle"
+       style="display:block"
+       [attr.data-ad-client]="adsService['clientId']"
+       [attr.data-ad-slot]="adSlot"
+       data-ad-format="auto"
+       data-full-width-responsive="true">
+  </ins>
+</ng-container>
+
+<ng-template #adsBlocked>
+  <!-- Nada o un placeholder -->
+   sin publicidad
+</ng-template>

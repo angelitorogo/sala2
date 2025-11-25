@@ -10,17 +10,19 @@ import { registerLocaleData } from '@angular/common';
 
 import { LOCALE_ID } from '@angular/core';
 import localeEs from '@angular/common/locales/es';
+import { CookieBannerComponent } from './dashboard/components/cookie-banner/cookie-banner.component';
 
 registerLocaleData(localeEs, 'es-ES');
 
 @NgModule({
   declarations: [
     AppComponent,
+    CookieBannerComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [
     {

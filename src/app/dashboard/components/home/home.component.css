@@ -33,3 +33,9 @@
     transform: scale(1);
   }
 }
+
+
+.banner-horizontal {
+  display: block;
+  margin: 2rem 0;
+}

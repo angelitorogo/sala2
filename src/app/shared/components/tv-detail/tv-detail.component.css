@@ -202,7 +202,7 @@ h3 {
 
 .hint-login {
   margin-top: 0.5rem;
-  font-size: 0.85rem;
+  font-size: 1.1rem;
   opacity: 0.7;
 }
 
@@ -292,7 +292,7 @@ h3 {
 }
 
 .person-role {
-  font-size: .85rem;
+  font-size: 1.1rem;
   opacity: .85;
 }
 
@@ -403,8 +403,16 @@ h3 {
     grid-template-columns: 1fr;
   }
 
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
   .poster {
-    max-width: 260px;
+    /*max-width: 260px;*/
   }
 }
 
@@ -493,7 +501,7 @@ h3 {
 
 #seasons .season-ep,
 #seasons .season-date {
-  font-size:1rem;
+  font-size:1.1rem;
   color: #aaa;
   line-height: 1.2;
 }

@@ -62,13 +62,13 @@
 
 .block__header h2 {
   margin: 0;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 800;
   color: var(--color-primary);
 }
 
 .block__count {
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   opacity: 0.85;
   color: #f3f3f3;
 }
@@ -148,9 +148,9 @@
 }
 
 .card__title {
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1;
   min-height: 2.4em; /* ~2 líneas */
 }
 
@@ -197,7 +197,7 @@
   border-radius: 12px;
   border: 1px solid var(--glass-border);
   background: var(--glass-bg);
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   opacity: 0.9;
 }
 

@@ -72,9 +72,9 @@
   color: var(--color-primary);
   background: rgba(255, 215, 0, .1);
   border: 1px solid rgba(255, 215, 0, .25);
-  padding: .4rem .8rem;
+  padding: 0.5rem 1rem;
   border-radius: 999px;
-  font-size: .85rem;
+  font-size: 1.6rem;
 }
 .chip.outline {
   background: transparent;
@@ -119,7 +119,7 @@
 }
 .aliases .label {
   color: #bbb;
-  font-size: .85rem;
+  font-size: 1.1rem;
 }
 .aliases .alias {
   font-size: .85rem;
@@ -152,5 +152,5 @@
 /* ===== Responsive ===== */
 @media (max-width: 980px) {
   .hero-content { grid-template-columns: 1fr; }
-  .poster { max-width: 260px; }
+  .poster { /*max-width: 260px;*/ }
 }

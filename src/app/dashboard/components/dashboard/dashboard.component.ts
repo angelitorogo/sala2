@@ -2,6 +2,8 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, 
 import { AuthService } from '../../../auth/services/auth.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
+import { ViewportService } from '../../services/viewport.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 type SubmenuKey = 'cine' | 'series';
 
@@ -23,12 +25,16 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('toggleBtn') toggleBtn!: ElementRef<HTMLElement>;
   @ViewChild('footerWrap') footerWrap!: ElementRef<HTMLElement>;
   @ViewChild('footerIcon') footerIcon!: ElementRef<HTMLElement>;
+  @ViewChild('footerIconMobile') footerIconMobile!: ElementRef<HTMLElement>;
   @ViewChild('footerBottom') footerBottom!: ElementRef<HTMLElement>;
   @ViewChild('container') container!: ElementRef<HTMLElement>;
   @ViewChild('navBar') navBar!: ElementRef<HTMLElement>;
+  @ViewChild('searchBar') searchBar!: ElementRef<HTMLElement>;
 
   public currentUrl = '';
   public currentRoutePath = '';
+
+  searchForm!: FormGroup;
    
    
   isTabletOrMobile = window.innerWidth <= 1024;
@@ -46,12 +52,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     public authService: AuthService,
     public router: Router,
     private route: ActivatedRoute,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    public viewport: ViewportService,
+    private fb: FormBuilder,  
   ) {
 
     
       window.addEventListener('resize', () => {
-        window.innerWidth <= 1024 ? this.isTabletOrMobile = true : this.isTabletOrMobile = false;
+        window.innerWidth <= 725 ? this.isTabletOrMobile = true : this.isTabletOrMobile = false;
         //console.log(this.isTabletOrMobile)
       });
       
@@ -62,6 +70,16 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         .subscribe((event) => {
           // URL completa después de redirecciones
           this.currentUrl = event.urlAfterRedirects;
+
+          if(this.searchBar) {
+            if(this.currentUrl == '/dashboard/home') {
+              this.searchBar.nativeElement.classList.remove('save-search');
+            } else {
+              this.searchBar.nativeElement.classList.add('save-search');
+            }
+          }
+          
+          
           // Actualizamos el modo de navbar
           this.updateNavbarCompact();
           // Cerramos menús
@@ -71,10 +89,19 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
   ngOnInit(): void {
+
+    // buscador: un solo campo obligatorio (cuando haya texto)
+    this.searchForm = this.fb.group({
+      query: ['', [Validators.minLength(2)]],
+    });
+
     this.authService.comprobarUser();
     this.updateNavbarCompact();
     // URL actual al cargar el componente
     this.currentUrl = this.router.url;
+
+    
+    
   }
 
   ngAfterViewInit(): void {
@@ -217,9 +244,40 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   toogleFooter() {
+  
     this.footerWrap.nativeElement.classList.toggle('nonExpanded-footer')
-    this.footerBottom.nativeElement.classList.toggle('nonExpanded-footer')
+
     this.footerIcon.nativeElement.innerHTML == '☰' ?
       this.footerIcon.nativeElement.innerHTML = '✖' : this.footerIcon.nativeElement.innerHTML = '☰';
+
+    if(!this.isTabletOrMobile)  {
+      this.footerBottom.nativeElement.classList.toggle('nonExpanded-footer')
+    }
+
+    if(this.isTabletOrMobile) {
+      this.footerIconMobile.nativeElement.classList.toggle('nonExpanded-footer')
+    } 
+    
+    
   }
+
+  openLink(path: string) {
+    this.toogleFooter();
+    this.router.navigate([path]);
+  }
+
+  onSubmitSearch(): void {
+    if (this.searchForm.invalid) {
+      return;
+    }
+    const value = (this.searchForm.value.query ?? '').trim();
+    if (!value) {
+      return;
+    }
+
+    console.log('🔎 Buscar:', value);
+    // Más adelante:
+    // this.router.navigate(['/dashboard/buscar'], { queryParams: { q: value } });
+  }
+
 }

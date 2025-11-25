@@ -96,6 +96,34 @@
 </nav>
 
 
+<!-- ===== BUSCADOR GLOBAL ===== -->
+<div class="search-bar-wrapper" #searchBar>
+  <div class="search-bar">
+    <form [formGroup]="searchForm" (ngSubmit)="onSubmitSearch()">
+      <div class="search-bar-inner">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+
+        <input
+          type="text"
+          formControlName="query"
+          name="query"
+          class="search-input"
+          placeholder="Buscar películas, series, actores..."
+          autocomplete="off"
+        />
+
+        <button
+          type="submit"
+          class="btn-search"
+          [disabled]="!searchForm.valid"
+        >
+          Buscar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
 
 
@@ -104,7 +132,7 @@
 </div>
 
 <footer class="site-footer">
-  <div class="footer-wrap nonExpanded-footer" #footerWrap>
+  <div class="footer-wrap nonExpanded-footer"  #footerWrap>
     <span class="icono" (click)="toogleFooter()" #footerIcon>☰</span>
     <div class="footer-brand">
       <div class="brand-line">
@@ -117,26 +145,36 @@
     <nav class="footer-links">
       <div class="col">
         <h4>Cine</h4>
-        <a routerLink="/dashboard/en-cines">Ahora en cines</a>
-        <a routerLink="/dashboard/proximos-estrenos">Próximos estrenos</a>
+        <a (click)="openLink('/dashboard/en-cines')">Ahora en cines</a>
+        <a (click)="openLink('/dashboard/proximos-estrenos')">Próximos estrenos</a>
       </div>
       <div class="col">
         <h4>Series</h4>
-        <a routerLink="/dashboard/en-emision">En emisión actualmente</a>
-        <a routerLink="/dashboard/hoy">En emisión hoy</a>
+        <a (click)="openLink('/dashboard/en-emision')">En emisión <span *ngIf="viewport.isDesktop$ | async">actualmente</span></a>
+        <a (click)="openLink('/dashboard/hoy')">En emisión hoy</a>
       </div>
       <div class="col">
         <h4>Legal</h4>
-        <a routerLink="/dashboard/contacto">Contacto</a>
-        <a routerLink="/terminos">Términos y Privacidad</a>
-        <a routerLink="/cookies">Cookies</a>
+        <a (click)="openLink('/dashboard/contacto')">Contacto</a>
+        <a (click)="openLink('/dashboard/terminos')">Términos y Privacidad</a>
+        <a (click)="openLink('/dashboard/cookies')">Cookies</a>
       </div>
     </nav>
+    <div class="tmdb-note-mobile" *ngIf="viewport.isMobile$ | async">
+      <span>© {{ currentYear }} SALA 2</span>
+      <span class="tmdb-note">Esta página utiliza la API de TMDB pero no está avalada ni certificada por TMDB.</span>
+    </div>
   </div>
 
-  <div class="footer-bottom">
+  <!-- Versión escritorio -->
+  <div class="footer-bottom" *ngIf="viewport.isDesktop$ | async">
     <span class="icono bottom" (click)="toogleFooter()" #footerBottom>☰</span>
     <span>© {{ currentYear }} SALA 2</span>
     <span class="tmdb-note">Esta página utiliza la API de TMDB pero no está avalada ni certificada por TMDB.</span>
   </div>
+  <!-- Versión móvil: solo botón -->
+  <div class="footer-bottom" *ngIf="viewport.isMobile$ | async">
+    <span class="icono bottom" (click)="toogleFooter()" #footerIconMobile>☰</span>
+  </div>
+
 </footer>

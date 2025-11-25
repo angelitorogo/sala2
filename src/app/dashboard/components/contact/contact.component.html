@@ -25,7 +25,7 @@
 
       <!-- Nombre -->
       <div class="form-group">
-        <label for="nombre">Nombre</label>
+        <label for="nombre">Nombre {{functionalEnabled}}</label>
         <input
           id="nombre"
           type="text"
@@ -113,32 +113,42 @@
         </small>
       </div>
 
-      <!-- Captcha sencillo -->
-      <div class="form-group captcha-group">
-        <label for="captcha">
-          Verificación anti-bots
-        </label>
-        <div class="captcha-row">
-          <span class="captcha-question">
-            ¿Cuánto es <strong>{{ captchaA }}</strong> + <strong>{{ captchaB }}</strong>?
-          </span>
-          <input
-            id="captcha"
-            type="number"
-            formControlName="captcha"
-            name="captcha"
-            [class.is-invalid]="captchaError || hasError('captcha','required')"
-          />
+      <!-- reCAPTCHA v2 checkbox -->
+      <div *ngIf="functionalEnabled; else captchaBloqueado">
+
+        <div class="form-group captcha-group">
+          <label>
+            Verificación anti-bots
+          </label>
+
+          <div class="captcha-row">
+            <re-captcha
+              [siteKey]="siteKey"
+              (resolved)="onCaptchaResolved($event)"
+              errorMode="handled"
+              (errored)="onCaptchaError($event)"
+            ></re-captcha>
+          </div>
+
+          <small class="error" *ngIf="hasError('recaptcha','required')">
+            Debes completar el captcha para continuar.
+          </small>
         </div>
-        <small class="error" *ngIf="hasError('captcha','required')">
-          Resuelve la operación para continuar.
-        </small>
-        <small class="error" *ngIf="captchaError">
-          Resultado incorrecto, inténtalo de nuevo.
-        </small>
+
       </div>
 
-      <button type="submit" [disabled]="isSubmitting">
+      <ng-template #captchaBloqueado>
+        <p class="text-sm">
+          Para usar el CAPTCHA y enviar este formulario,
+          tienes que aceptar las cookies funcionales.
+        </p>
+        <button type="button" (click)="openCookieSettings()">
+          Configurar cookies
+        </button>
+      </ng-template>
+          
+
+      <button *ngIf="functionalEnabled" type="submit" [disabled]="isSubmitting">
         {{ isSubmitting ? 'Enviando…' : 'Enviar mensaje' }}
       </button>
 

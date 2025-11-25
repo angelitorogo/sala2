@@ -1,7 +1,7 @@
 // src/app/core/services/user-collections.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { MovieSummary, TvSummary } from '../../shared/models/user-collections/user-collections.model';
 import { AuthService } from '../../auth/services/auth.service';
 import { catchError, map, of, switchMap, throwError } from 'rxjs';

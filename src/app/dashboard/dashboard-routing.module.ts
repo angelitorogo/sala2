@@ -16,6 +16,8 @@ import { TopRatedComponent } from './components/cine/top-rated/top-rated.compone
 import { SeriesPopularesComponent } from './components/series/series-populares/series-populares.component';
 import { FavoritesComponent } from './components/favorites/favorites.component';
 import { ContactComponent } from './components/contact/contact.component';
+import { TermsPrivacyComponent } from './components/terms-privacy/terms-privacy.component';
+import { CookiesSettingsComponent } from './components/cookies-settings/cookies-settings.component';
 
 
 const routes: Routes = [
@@ -80,6 +82,14 @@ const routes: Routes = [
       {
         path: 'contacto',
         component: ContactComponent
+      },
+      {
+        path: 'terminos',
+        component: TermsPrivacyComponent,
+      },
+      {
+        path: 'cookies',
+        component: CookiesSettingsComponent,
       },
       /*
       {
