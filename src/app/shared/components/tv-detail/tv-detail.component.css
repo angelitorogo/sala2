@@ -37,7 +37,7 @@ h3 {
   min-height: 50vh;
   background-size: cover;
   background-position: center;
-  margin-top: 2rem;
+  margin-top: 16rem;
 }
 
 .hero-overlay {
@@ -401,6 +401,10 @@ h3 {
 @media (max-width: 980px) {
   .hero-content {
     grid-template-columns: 1fr;
+  }
+
+  .hero {
+    margin-top: 13rem;
   }
 
   .actions {

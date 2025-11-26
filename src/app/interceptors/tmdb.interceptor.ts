@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 
 @Injectable()
 export class TmdbInterceptor implements HttpInterceptor {
-  private readonly apiKey = environment.tmdbApiKey ?? '';
+  private readonly apiKey = environment.TMDBAPIKEY ?? '';
   private readonly language = 'es-ES';
   private readonly region = 'ES';
 

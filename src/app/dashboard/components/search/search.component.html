@@ -1,0 +1,73 @@
+<!-- src/app/features/search/pages/search/search.component.html -->
+
+<section class="search-wrapper">
+    <div class="brand">
+        <img src="assets/images/sala2.png" alt="" class="brand__icon" />
+        <div class="brand__text">
+            <h1>Resultado de la busqueda</h1>
+        </div>
+
+       
+    </div>
+
+    <div class="loading-screen" *ngIf="!movies.length && !series.length && !persons.length && loading else noResults">
+        <div class="spinner"></div>
+    </div>
+
+    <ng-template #noResults>
+        <!-- Sin resultados (por si acaso) -->
+        <p class="no-results" *ngIf="!movies.length && !series.length && !persons.length">
+            No hay resultados disponibles para "{{query}}". Vuelve a buscar desde la barra superior.
+        </p>
+
+    </ng-template>
+
+  <!-- Películas -->
+  <section
+    class="section"
+    *ngIf="movies.length"
+  >
+    <app-media-row
+      title="Películas"
+      [items]="moviesFinal"
+      type="movie"
+    >
+    </app-media-row>
+  </section>
+
+  <!-- Series -->
+  <section
+    class="section"
+    *ngIf="series.length"
+  >
+    <app-media-row
+      title="Series"
+      [items]="seriesFinal"
+      type="tv"
+    >
+    </app-media-row>
+  </section>
+
+  <!-- Personas -->
+  <section
+    class="section"
+    *ngIf="personsFinal.length"
+  >
+
+    <app-media-row
+      title="Personas"
+      [items]="personsFinal"
+      type="person"
+    >
+    </app-media-row>
+
+    
+
+
+  </section>
+
+  
+    
+
+</section>
+

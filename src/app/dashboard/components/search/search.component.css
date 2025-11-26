@@ -1,0 +1,158 @@
+/* ============================
+   REPARTO PRINCIPAL (CAST)
+   ============================ */
+
+.search-wrapper {
+    margin-top: 13rem;
+    padding: 24px clamp(16px, 4vw, 40px);
+    color: #e7e7e7;
+    background: transparent;
+}
+
+.section-header h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  text-shadow: 1px 1px 2px #000;
+  margin-bottom: 0.4rem;
+}
+
+/* Contenedor horizontal */
+.row.scroller {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 140px;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 6px 4px 10px 6px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) transparent;
+}
+
+/* Cada persona (tarjeta) */
+.person.card {
+  scroll-snap-align: start;
+  width: 140px;
+  flex: 0 0 auto;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 0.6rem;
+  backdrop-filter: blur(6px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Hover elegante */
+.person.card:hover {
+  cursor: pointer;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Imagen del actor */
+.person.card img {
+  width: 100%;
+  border-radius: 12px;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+  transition: transform 0.25s ease;
+}
+
+.person.card:hover img {
+  transform: scale(1.04);
+}
+
+/* Nombre del actor */
+.person-name {
+  margin-top: 0.55rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  text-shadow: 1px 1px 2px #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Papel */
+.person-role {
+  margin-top: 0.2rem;
+  font-size: 1.1rem;
+  opacity: 0.85;
+  color: #e5e7eb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-results {
+    text-align: center;
+    color: var(--color-primary);
+    opacity: 0.8;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand .brand__icon {
+  width: 36px;
+  height: 36px;
+  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.25));
+}
+
+.brand .brand__text h1 {
+  margin: 0;
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+  color: var(--color-primary);
+}
+
+.brand .brand__text p {
+  color: var(--color-primary);
+  margin: 2px 0 0;
+  opacity: 0.8;
+}
+
+.loading-screen {
+  height: 40vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ddd;
+  font-size: 1.2rem;
+  animation: fadeScale 0.5s ease;
+}
+
+.spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top-color: #ffcc00;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 1024px) {
+
+    .search-wrapper {
+        margin-top: 13rem
+    }
+
+}
+

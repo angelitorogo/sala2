@@ -51,8 +51,10 @@ export class MediaRowComponent implements AfterViewInit {
     this.selectItem.emit(item);
     if (this.kindOf(item) === 'movie') {
       this.router.navigate(['/dashboard/cine', item.id])
-    } else {
+    } else if(this.kindOf(item) === 'tv') {
       this.router.navigate(['/dashboard/series', item.id])
+    } else {
+      this.router.navigate(['/dashboard/person', item.id])
     }
   }
 
@@ -61,9 +63,9 @@ export class MediaRowComponent implements AfterViewInit {
   }
 
   // ===== Helpers de display (pelis/series) =====
-  kindOf(it: any): 'movie' | 'tv' {
+  kindOf(it: any): 'movie' | 'tv'  {
     // si el item trae media_type lo usamos; si no, usamos el input
-    return (it?.media_type as 'movie' | 'tv') || this.type || 'movie';
+    return (it?.media_type as 'movie' | 'tv' ) || this.type || 'movie';
   }
 
   displayTitle(it: any): string {
@@ -77,11 +79,11 @@ export class MediaRowComponent implements AfterViewInit {
   }
 
   posterPath(it: any): string | null {
-    return it?.poster_path || null;
+    return it?.poster_path || it?.profile_path || null;
   }
 
   vote(it: any): number {
-    return Number(it?.vote_average ?? 0);
+    return Number((it?.vote_average ?? 0) || (it?.popularity ?? 0));
   }
 
   // ===== Badges =====

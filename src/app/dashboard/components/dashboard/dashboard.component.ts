@@ -4,6 +4,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { ViewportService } from '../../services/viewport.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SearchService, TmdbSearchResult } from '../../services/search.service';
 
 type SubmenuKey = 'cine' | 'series';
 
@@ -29,7 +30,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('footerBottom') footerBottom!: ElementRef<HTMLElement>;
   @ViewChild('container') container!: ElementRef<HTMLElement>;
   @ViewChild('navBar') navBar!: ElementRef<HTMLElement>;
-  @ViewChild('searchBar') searchBar!: ElementRef<HTMLElement>;
+  @ViewChild('searchBarWrapper') searchBarWrapper!: ElementRef<HTMLElement>;
 
   public currentUrl = '';
   public currentRoutePath = '';
@@ -48,13 +49,16 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   private routerSub?: Subscription;
   private unlistenDocClick?: () => void;
 
+  public resultsSearch?: TmdbSearchResult[];
+
   constructor(
     public authService: AuthService,
     public router: Router,
     private route: ActivatedRoute,
     private renderer: Renderer2,
     public viewport: ViewportService,
-    private fb: FormBuilder,  
+    private fb: FormBuilder,
+    private searchService: SearchService,
   ) {
 
     
@@ -71,13 +75,32 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
           // URL completa después de redirecciones
           this.currentUrl = event.urlAfterRedirects;
 
-          if(this.searchBar) {
-            if(this.currentUrl == '/dashboard/home') {
-              this.searchBar.nativeElement.classList.remove('save-search');
-            } else {
-              this.searchBar.nativeElement.classList.add('save-search');
+          setTimeout(() => {
+            //console.log(this.searchBarWrapper)
+            if(this.searchBarWrapper) {
+              if(this.currentUrl == '/dashboard/home') {
+                this.searchBarWrapper.nativeElement.classList.remove('save-search');
+                this.searchBarWrapper.nativeElement.classList.remove('non-display');
+                this.container.nativeElement.classList.remove('container-terms-cond-cookies');
+                this.container.nativeElement.classList.add('save-container');
+                
+              } else {
+
+                if(this.currentUrl == '/dashboard/contacto' || this.currentUrl == '/dashboard/terminos' || this.currentUrl == '/dashboard/cookies' ) {
+                  this.searchBarWrapper.nativeElement.classList.add('non-display');
+                  this.container.nativeElement.classList.add('container-terms-cond-cookies');
+                } else {
+                  this.searchBarWrapper.nativeElement.classList.remove('non-display');
+                  this.searchBarWrapper.nativeElement.classList.add('save-search');
+                  this.container.nativeElement.classList.remove('save-container');
+                  this.container.nativeElement.classList.remove('container-terms-cond-cookies');
+                }
+
+                
+              }
             }
-          }
+          }, 100);
+          
           
           
           // Actualizamos el modo de navbar
@@ -266,18 +289,38 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate([path]);
   }
 
+  
+
   onSubmitSearch(): void {
     if (this.searchForm.invalid) {
       return;
     }
+
+    
+
     const value = (this.searchForm.value.query ?? '').trim();
     if (!value) {
       return;
     }
 
-    console.log('🔎 Buscar:', value);
-    // Más adelante:
-    // this.router.navigate(['/dashboard/buscar'], { queryParams: { q: value } });
+    //console.log('🔎 Buscar:', value);
+
+    this.searchService.fetch180ByType(value).subscribe({
+      next: ({ movies, tv, persons }) => {
+
+        //console.log('🎬 Pelis (40 máx):', movies);
+        //console.log('📺 Series (40 máx):', tv);
+        //console.log('👤 Personas (40 máx):', persons);
+
+        
+        this.searchService.setResults({...movies, ...tv, ...persons}, value);
+
+        //this.searchForm.reset();
+        
+        this.router.navigate(['/dashboard/search', value]);
+
+      }
+    });
   }
 
 }

@@ -19,6 +19,7 @@ import { TermsPrivacyComponent } from './components/terms-privacy/terms-privacy.
 import { CookiesSettingsComponent } from './components/cookies-settings/cookies-settings.component';
 import { CookieBannerComponent } from './components/cookie-banner/cookie-banner.component';
 import { ManualAdComponent } from './components/manual-ad/manual-ad.component';
+import { SearchComponent } from './components/search/search.component';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { ManualAdComponent } from './components/manual-ad/manual-ad.component';
     TermsPrivacyComponent,
     CookiesSettingsComponent,
     ManualAdComponent,
+    SearchComponent,
 
   ],
   imports: [

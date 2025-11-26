@@ -18,6 +18,7 @@ import { FavoritesComponent } from './components/favorites/favorites.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { TermsPrivacyComponent } from './components/terms-privacy/terms-privacy.component';
 import { CookiesSettingsComponent } from './components/cookies-settings/cookies-settings.component';
+import { SearchComponent } from './components/search/search.component';
 
 
 const routes: Routes = [
@@ -90,6 +91,10 @@ const routes: Routes = [
       {
         path: 'cookies',
         component: CookiesSettingsComponent,
+      },
+      {
+        path: 'search/:query',
+        component: SearchComponent,
       },
       /*
       {

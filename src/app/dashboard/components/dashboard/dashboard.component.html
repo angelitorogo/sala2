@@ -97,11 +97,11 @@
 
 
 <!-- ===== BUSCADOR GLOBAL ===== -->
-<div class="search-bar-wrapper" #searchBar>
+<div class="search-bar-wrapper" #searchBarWrapper>
   <div class="search-bar">
     <form [formGroup]="searchForm" (ngSubmit)="onSubmitSearch()">
       <div class="search-bar-inner">
-        <span class="search-icon" aria-hidden="true">🔍</span>
+        <i class="bi bi-search search-icon"></i>
 
         <input
           type="text"
@@ -127,7 +127,7 @@
 
 
 
-<div class="container">
+<div class="container" #container>
   <router-outlet></router-outlet>
 </div>
 
@@ -139,7 +139,7 @@
         <img src="assets/icons/favicon.png" alt="logo" class="logo-icon" />
         <span class="site-name">SALA 2</span>
       </div>
-      <p class="tagline">Películas y series para ver hoy.</p>
+      <p class="tagline">Películas y series.</p>
     </div>
 
     <nav class="footer-links">

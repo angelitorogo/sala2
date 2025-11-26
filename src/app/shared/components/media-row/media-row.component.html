@@ -28,14 +28,14 @@
           <img [src]="imageUrl(it, 'w342')" [alt]="displayTitle(it)" loading="lazy">
         
           <!-- ⭐ Rating sobre la imagen (abajo-derecha) -->
-          <div class="rating-overlay">
+          <div class="rating-overlay" *ngIf="type != 'person'">
             ★ {{ vote(it) | number:'1.1-1' }}
           </div>
         </div>
 
         <div class="meta">
           <span class="name">{{ displayTitle(it) }}</span>
-          <span class="sub">
+          <span class="sub" *ngIf="type != 'person'">
             {{ kindOf(it) === 'tv' ? 'Serie' : 'Película' }}
             <ng-container *ngIf="displayDate(it) as d"> • {{ d | date:'mediumDate' }}</ng-container>
           </span>
