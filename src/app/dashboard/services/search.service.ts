@@ -77,11 +77,13 @@ export class SearchService {
       personsP1: this.searchPersons(query, 1),
       personsP2: this.searchPersons(query, 2),
       personsP3: this.searchPersons(query, 3),
+      personsP4: this.searchPersons(query, 4),
+      personsP5: this.searchPersons(query, 5),
     }).pipe(
-      map(({ moviesP1, moviesP2, moviesP3, tvP1, tvP2, tvP3, personsP1, personsP2, personsP3 }) => {
-        const movies = [...moviesP1, ...moviesP2, ...moviesP3].slice(0, 40);
-        const tv = [...tvP1, ...tvP2, ...tvP3].slice(0, 40);
-        const persons = [...personsP1, ...personsP2, ...personsP3].slice(0, 40);
+      map(({ moviesP1, moviesP2, moviesP3, tvP1, tvP2, tvP3, personsP1, personsP2, personsP3, personsP4, personsP5 }) => {
+        const movies = [...moviesP1, ...moviesP2, ...moviesP3].slice(0, 60);
+        const tv = [...tvP1, ...tvP2, ...tvP3].slice(0, 60);
+        const persons = [...personsP1, ...personsP2, ...personsP3, ...personsP4, ...personsP5].slice(0, 100);
 
         return { movies, tv, persons };
       })

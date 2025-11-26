@@ -145,7 +145,7 @@
     <section
       id="cast"
       class="section"
-      *ngIf="m.credits?.cast?.length"
+      *ngIf="m.credits.cast.length"
     >
 
       <div class="section-header">
@@ -178,7 +178,7 @@
     <section
       id="crew"
       class="section"
-      *ngIf="m.credits?.crew?.length"
+      *ngIf="m.credits.crew.length"
     >
       <div class="section-header">
         <h2>Equipo</h2>
@@ -209,7 +209,7 @@
     <section
       id="trailer"
       class="section"
-      *ngIf="m.videos?.results?.length"
+      *ngIf="m.videos.results.length"
     >
       <div class="section-header">
         <h2>Tráiler</h2>
@@ -236,7 +236,7 @@
     <section
       id="recommendations"
       class="section"
-      *ngIf="m.recommendations?.results?.length"
+      *ngIf="m.recommendations.results.length"
     >
       
       <app-media-row
@@ -252,7 +252,7 @@
     <section
       id="similar"
       class="section"
-      *ngIf="m.similar?.results?.length"
+      *ngIf="m.similar.results.length"
     >
       
       <app-media-row
