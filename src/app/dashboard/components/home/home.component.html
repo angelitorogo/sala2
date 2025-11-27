@@ -21,30 +21,29 @@
 
 <ng-template #loadedContent>
 
-    <!-- ⭐⭐ PRIMER BANNER MANUAL AQUÍ ⭐⭐ -->
-    <app-manual-ad adSlot="1234567890" class="adsbygoogle banner-horizontal"></app-manual-ad>
-    <!-- Cambia 1234567890 por tu slot real -->
-
     <!-- 1 -->
     <app-media-row title="Tendencias de hoy" [items]="trendingMixed" (selectItem)="onSelect($event)">
     </app-media-row>
+
+    <!-- ⭐⭐ PRIMER BANNER MANUAL AQUÍ ⭐⭐ -->
+    <app-manual-ad adSlot="1234567890" class="adsbygoogle banner-horizontal"></app-manual-ad>
+    <!-- Cambia 1234567890 por tu slot real -->
 
     <!-- 2 -->
     <app-media-row title="En cines ahora" [items]="moviesNowPlaying" type="movie" (selectItem)="onSelect($event)"
         [showMoreButton]="true" (more)="onMoreMoviesNowPlaying()">
     </app-media-row>
 
-    <!-- ⭐ Banner 2: entre la fila 2 y 3 -->
+    <!-- 3 -->
+    <app-media-row title="En emisión hoy" [items]="tvAiringToday" type="tv" (selectItem)="onSelect($event)"
+        [showMoreButton]="true" (more)="onMoretvAiringToday()">
+    </app-media-row>
+
     <app-manual-ad adSlot="0987654321" class="adsbygoogle banner-horizontal"></app-manual-ad>
     <!-- 🔼 puedes:
         - usar el mismo slot que el de arriba
         - o crear otro bloque distinto en AdSense y poner su slot aquí 
     -->
-
-    <!-- 3 -->
-    <app-media-row title="En emisión hoy" [items]="tvAiringToday" type="tv" (selectItem)="onSelect($event)"
-        [showMoreButton]="true" (more)="onMoretvAiringToday()">
-    </app-media-row>
 
     <!-- 4 -->
     <app-media-row title="Películas populares" [items]="moviesPopular" type="movie" (selectItem)="onSelect($event)"

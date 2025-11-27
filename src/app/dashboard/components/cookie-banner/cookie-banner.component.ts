@@ -25,6 +25,8 @@ export class CookieBannerComponent implements OnInit {
     this.visible = !this.cookiePrefs.hasStoredPrefs;
   }
 
+  // Solo funcionales → analytics: false, ads: false
+  // => Analytics desactivado y Ads en modo NO personalizado (por tu AdsService)
   acceptEssential(): void {
     const prefs: CookiePrefs = {
       functional: true,
@@ -35,6 +37,8 @@ export class CookieBannerComponent implements OnInit {
     this.visible = false;
   }
 
+  // Aceptar todo → analytics: true, ads: true
+  // => Analytics activo y Ads personalizados
   acceptAll(): void {
     const prefs: CookiePrefs = {
       functional: true,
@@ -45,8 +49,10 @@ export class CookieBannerComponent implements OnInit {
     this.visible = false;
   }
 
+  // Abre la pantalla de configuración avanzada
   openSettings(): void {
-    this.cookiePrefs.updatePrefs({ functional: true }); // asumimos funcional como imprescindible
+    // Aseguramos funcional como imprescindible
+    this.cookiePrefs.updatePrefs({ functional: true });
     this.visible = false;
     this.router.navigate(['/dashboard/cookies']);
   }

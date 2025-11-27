@@ -32,13 +32,13 @@ export class AnalyticsService {
   init(): void {
     // 1) Solo en producción
     if (!environment.PRODUCTION) {
-      console.log('[Analytics] Desactivado en entorno no producción');
+      //console.log('[Analytics] Desactivado en entorno no producción');
       return;
     }
 
     // 2) Sin consentimiento de analítica, no hacemos nada
     if (!this.cookiePrefs.hasConsent('analytics')) {
-      console.log('[Analytics] Sin consentimiento de analítica, no se carga GA4');
+      //console.log('[Analytics] Sin consentimiento de analítica, no se carga GA4');
       return;
     }
 
@@ -74,7 +74,7 @@ export class AnalyticsService {
     window.gtag('js', new Date());
     window.gtag('config', this.measurementId);
 
-    console.log('[Analytics] GA4 inicializado con ID', this.measurementId);
+    //console.log('[Analytics] GA4 inicializado con ID', this.measurementId);
   }
 
   /** Track automático de page views con el router de Angular */

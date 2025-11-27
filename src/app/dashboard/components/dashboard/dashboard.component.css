@@ -713,6 +713,7 @@
 .save-search {
   position: fixed;
   top: 8rem;
+  padding-top: none;
   width: 100%;
   z-index: 999999;
 }
@@ -735,7 +736,8 @@
   }
 
   .save-search {
-    top: 7rem;
+    top: 5rem;
+    padding-top: 2rem;
   }
 
   .search-bar {

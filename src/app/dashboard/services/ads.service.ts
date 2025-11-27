@@ -7,6 +7,8 @@ import { environment } from '../../../environments/environment';
 declare global {
   interface Window {
     adsbygoogle: any[];
+    // Propiedad usada para modo no personalizado
+    requestNonPersonalizedAds?: number;
   }
 }
 
@@ -15,35 +17,50 @@ export class AdsService {
   private scriptId = 'adsense-script';
   private initialized = false;
 
-  // Pon aquí TU client de AdSense en environment.prod.ts
-  private readonly clientId = environment.ADSCLIENTID; // ej: "ca-pub-XXXXXXXXXXXX"
+  // Tu client de AdSense definido en environment.prod.ts
+  public readonly clientId = environment.ADSCLIENTID; // ej: 'ca-pub-XXXXXXXXXXXX'
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private cookiePrefs: CookiePreferencesService,
   ) {}
 
-  /** Llamar una vez (por ejemplo en AppComponent) */
+  /**
+   * Llamar una vez (por ejemplo en AppComponent.ngOnInit)
+   */
   init(): void {
     if (!environment.PRODUCTION) {
-      console.log('[Ads] Desactivado en entorno no producción');
+      //console.log('[Ads] Desactivado en entorno no producción');
       return;
     }
 
-    if (!this.cookiePrefs.hasConsent('ads')) {
-      console.log('[Ads] Sin consentimiento de Ads, no se carga AdSense');
+    if (this.initialized) {
       return;
     }
 
-    if (this.initialized || !this.clientId) {
+    if (!this.clientId) {
+      //console.warn('[Ads] No hay ADSCLIENTID configurado. No se carga AdSense.');
       return;
+    }
+
+    const hasAdsConsent = this.cookiePrefs.hasConsent('ads');
+
+    if (!hasAdsConsent) {
+      // Modo NO PERSONALIZADO (contextual)
+      (window as any).adsbygoogle = (window as any).adsbygoogle || [];
+      (window as any).adsbygoogle.requestNonPersonalizedAds = 1;
+      //console.log('[Ads] Consentimiento de Ads denegado: se usarán anuncios NO personalizados.');
+    } else {
+      //console.log('[Ads] Consentimiento de Ads aceptado: se usarán anuncios PERSONALIZADOS.');
     }
 
     this.loadScript();
     this.initialized = true;
   }
 
-  /** Script global de AdSense (sirve para Auto Ads y manuales) */
+  /**
+   * Script global de AdSense (Auto Ads + manuales)
+   */
   private loadScript(): void {
     if (this.document.getElementById(this.scriptId)) {
       return;
@@ -57,17 +74,23 @@ export class AdsService {
     script.setAttribute('crossorigin', 'anonymous');
     this.document.head.appendChild(script);
 
-    console.log('[Ads] Script de AdSense inyectado');
+    //console.log('[Ads] Script de AdSense inyectado');
   }
 
-  /** Para banners manuales: empuja un nuevo anuncio en un <ins> */
+  /**
+   * Para banners manuales: empuja un nuevo anuncio en un <ins>
+   * A estas alturas:
+   *  - si el usuario aceptó Ads → personalizados
+   *  - si el usuario NO aceptó Ads → no personalizados (requestNonPersonalizedAds = 1)
+   */
   pushManualAd(): void {
     if (!environment.PRODUCTION) {
       return;
     }
-    if (!this.cookiePrefs.hasConsent('ads')) {
-      console.log('[Ads] Intento de mostrar anuncio manual sin consentimiento de Ads');
-      return;
+
+    // Aseguramos que el script esté inicializado
+    if (!this.initialized) {
+      this.init();
     }
 
     try {
@@ -77,21 +100,50 @@ export class AdsService {
     }
   }
 
-  /** Llamar cuando cambien las preferencias de cookies */
+  /**
+   * Llamar cuando cambien las preferencias de cookies
+   * (por ejemplo, desde tu CookiePreferencesService o desde el banner)
+   */
   onPreferencesChanged(): void {
     if (!environment.PRODUCTION) return;
 
     const prefs = this.cookiePrefs.getSnapshot();
-    if (prefs.ads && !this.initialized) {
-      // Antes sin Ads, ahora con Ads → inicializamos
-      this.init();
+
+    // Si aún no se ha inicializado AdSense, no hacemos nada:
+    // cuando se llame a init() se aplicará el modo correcto según las prefs actuales.
+    if (!this.initialized) {
+      return;
     }
 
-    if (!prefs.ads && this.initialized) {
-      // Aquí podrías, si quieres ser muy purista:
-      // - dejar de mostrar banners (no llamar más a pushManualAd)
-      // - sugerir recargar la página para limpiar cookies de AdSense
-      console.warn('[Ads] Se ha retirado el consentimiento de Ads. Para limpiar cookies de AdSense puede ser necesario recargar la página.');
+    if (!prefs.ads) {
+      // El usuario retira el consentimiento de Ads:
+      // pasamos a modo NO PERSONALIZADO para las futuras impresiones.
+      (window as any).adsbygoogle = (window as any).adsbygoogle || [];
+      (window as any).adsbygoogle.requestNonPersonalizedAds = 1;
+
+      console.warn(
+        '[Ads] El usuario ha retirado el consentimiento de Ads. ' +
+        'Los próximos anuncios serán NO personalizados. ' +
+        'Para limpiar totalmente cookies y estado de AdSense, se recomienda recargar la página.'
+      );
+    } else {
+      // El usuario acepta Ads (o cambia de no → sí).
+      // Técnicamente, lo más limpio es recargar la página para que AdSense
+      // vuelva a inicializarse sin requestNonPersonalizedAds.
+      console.info(
+        '[Ads] El usuario ha aceptado Ads. ' +
+        'Para que los anuncios pasen a PERSONALIZADOS puede ser necesario recargar la página.'
+      );
+
+      // Si quieres forzar recarga automática (opcional):
+      // location.reload();
     }
   }
+
+
+  // Getter público solo para plantillas
+  get adsClientId(): string {
+    return this.clientId;
+  }
+
 }

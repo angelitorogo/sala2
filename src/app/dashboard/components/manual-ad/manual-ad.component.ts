@@ -1,7 +1,6 @@
 // src/app/shared/components/manual-ad/manual-ad.component.ts
 import { AfterViewInit, Component } from '@angular/core';
 import { AdsService } from '../../services/ads.service';
-import { CookiePreferencesService } from '../../services/cookie-preferences.service';
 
 @Component({
   selector: 'app-manual-ad',
@@ -14,13 +13,12 @@ export class ManualAdComponent implements AfterViewInit {
 
   constructor(
     public adsService: AdsService,
-    public cookiePrefs: CookiePreferencesService,
   ) {}
 
   ngAfterViewInit(): void {
-    // Solo empujamos el anuncio si la cookie de Ads está aceptada
-    if (this.cookiePrefs.hasConsent('ads')) {
-      this.adsService.pushManualAd();
-    } 
+    // Siempre empujamos el anuncio:
+    // - Si el usuario aceptó Ads → personalizados
+    // - Si no aceptó Ads → no personalizados (requestNonPersonalizedAds = 1)
+    this.adsService.pushManualAd();
   }
 }

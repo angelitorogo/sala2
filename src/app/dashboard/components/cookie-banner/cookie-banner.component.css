@@ -78,6 +78,39 @@
   white-space: nowrap;
 }
 
+.btn--primary {
+  background: var(--color-primary);
+  color: #111;
+  box-shadow: 0 6px 18px rgba(212,175,55,0.35);
+}
+
+.btn--primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.btn--ghost {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(148,163,184,0.6);
+  color: #e5e7eb;
+}
+
+.btn--ghost:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn--link {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  padding-inline: 0;
+}
+
+.btn--link:hover {
+  text-decoration: underline;
+}
+
 .btn--outline {
   background: transparent;
   border-color: var(--color-primary);

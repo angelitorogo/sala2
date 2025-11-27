@@ -274,10 +274,12 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       this.footerIcon.nativeElement.innerHTML = '✖' : this.footerIcon.nativeElement.innerHTML = '☰';
 
     if(!this.isTabletOrMobile)  {
+      if(this.footerBottom)
       this.footerBottom.nativeElement.classList.toggle('nonExpanded-footer')
     }
 
     if(this.isTabletOrMobile) {
+      if(this.footerIconMobile)
       this.footerIconMobile.nativeElement.classList.toggle('nonExpanded-footer')
     } 
     
@@ -285,8 +287,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openLink(path: string) {
-    this.toogleFooter();
     this.router.navigate([path]);
+    this.toogleFooter();
+    
   }
 
   
